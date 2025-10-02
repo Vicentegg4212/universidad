@@ -51,7 +51,13 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="assets/mobile-style.css">
-    
+    <link rel="stylesheet" href="assets/library-styles.css">
+    <link rel="stylesheet" href="assets/calculator-styles.css">
+    <link rel="stylesheet" href="assets/study-mode-styles.css">
+    <link rel="stylesheet" href="assets/exam-styles.css">
+    <link rel="stylesheet" href="assets/dashboard-styles.css">
+    <link rel="stylesheet" href="assets/pattern-detector-styles.css">
+
     <style>
         /* Fix para composes */
         .btn-camera,
@@ -275,6 +281,9 @@
                     <span>AI Study Genius</span>
                 </div>
                 <div class="header-actions">
+                    <button class="header-btn library-btn" onclick="personalLibrary.showLibrary()" title="Mi Biblioteca">
+                        📚 <span class="library-count">0</span>
+                    </button>
                     <button class="header-btn" id="clearChatBtn" title="Limpiar chat">
                         <span class="material-symbols-outlined">refresh</span>
                     </button>
@@ -351,7 +360,16 @@
     <input type="file" id="imageInput" accept="image/*" style="display: none;">
 
     <!-- JavaScript -->
-        <script src="js/mobile-script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/personal-library.js"></script>
+    <script src="js/scientific-calculator.js"></script>
+    <script src="js/study-mode.js"></script>
+    <script src="js/infographics-generator.js"></script>
+    <script src="js/flashcard-system.js"></script>
+    <script src="js/study-pattern-detector.js"></script>
+    <script src="js/academic-dashboard.js"></script>
+    <script src="js/exam-simulator.js"></script>
+    <script src="js/mobile-script.js"></script>
     
     <!-- Versión indicator -->
     <!-- ✅ AI STUDY GENIUS MOBILE v2.0 - 2025-10-02 - ULTRA OPTIMIZADO MÓVIL -->

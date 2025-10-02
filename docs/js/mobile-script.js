@@ -276,6 +276,20 @@ class MobileAIApp {
             this.chatContainer.style.display = 'block';
             this.renderMessages();
         }
+        
+        // Actualizar contador de biblioteca
+        this.updateLibraryCount();
+    }
+    
+    updateLibraryCount() {
+        if (personalLibrary) {
+            const count = personalLibrary.library.metadata?.totalTopics || 0;
+            const countElement = document.querySelector('.library-count');
+            if (countElement) {
+                countElement.textContent = count;
+                countElement.style.display = count > 0 ? 'inline' : 'none';
+            }
+        }
     }
     
     saveChatHistory() {
@@ -392,6 +406,12 @@ class MobileAIApp {
             this.chatHistory.push(assistantMessage);
             this.hideTypingIndicator();
             this.addMessageToDOM(assistantMessage);
+            
+            // Guardar automáticamente en la biblioteca personal
+            if (personalLibrary && text && response.content) {
+                personalLibrary.saveFromChat(text, response.content, userMessage.image ? [userMessage.image] : []);
+                this.updateLibraryCount();
+            }
             
         } catch (error) {
             console.error('Error:', error);

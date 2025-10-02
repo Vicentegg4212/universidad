@@ -1,4 +1,4 @@
-/* =/* ============== MATHEMATICAL STYLING ============== */
+/* ============== MATHEMATICAL STYLING ============== */
 .math-container {
     background: rgba(79, 172, 254, 0.1);
     border-left: 4px solid var(--primary);
@@ -71,7 +71,6 @@ mjx-container[jax="CHTML"][display="true"] {
    👨‍💻 Desarrollado por: Vicentegg4212  
    📱 Optimizado para dispositivos móviles
    ============================================== */
-   ================================================ */
 
 /* --- VARIABLES CSS MÓVIL --- */
 :root {
@@ -416,7 +415,22 @@ body {
 .btn-gallery,
 .btn-mic,
 .btn-send {
-    composes: touch-btn;
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: var(--radius-lg);
+    border: none;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+    position: relative;
+    overflow: hidden;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 .btn-send.enabled {
