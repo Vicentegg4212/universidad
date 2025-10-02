@@ -38,8 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
 1. 📚 Crear guías de estudio completas y estructuradas
 2. 🎯 Explicar conceptos de forma clara y concisa
 3. 💡 Proporcionar ejemplos prácticos
-4. 🔍 Analizar imágenes de apuntes, libros, problemas
-5. ✅ Resolver dudas académicas
+4. 🔍 Analizar imágenes de apuntes, libros, problemas, ejercicios
+5. ✅ Resolver dudas académicas y ayudar con tareas
+
+Cuando recibas una imagen:
+- Analiza detalladamente el contenido
+- Identifica conceptos, fórmulas, problemas o texto
+- Explica paso a paso lo que ves
+- Proporciona contexto educativo relevante
 
 Formato de respuesta:
 - Usa emojis para mejor visualización
@@ -49,12 +55,40 @@ Formato de respuesta:
 
 Recuerda: Eres un tutor amigable pero profesional.`
             },
-            ...messages,
-            {
-                role: "user",
-                content: lastMessage
-            }
+            ...messages
         ];
+
+        // Configurar el último mensaje con imagen si existe
+        const lastUserMessage = {
+            role: "user",
+            content: []
+        };
+
+        // Agregar texto si existe
+        if (lastMessage && lastMessage.trim()) {
+            lastUserMessage.content.push({
+                type: "text",
+                text: lastMessage
+            });
+        }
+
+        // Agregar imagen si existe
+        if (imageB64) {
+            console.log('📷 Agregando imagen al mensaje para Azure OpenAI');
+            lastUserMessage.content.push({
+                type: "image_url",
+                image_url: {
+                    url: `data:image/jpeg;base64,${imageB64.split(',')[1] || imageB64}`
+                }
+            });
+        }
+
+        // Si no hay contenido, usar mensaje por defecto
+        if (lastUserMessage.content.length === 0) {
+            lastUserMessage.content = "Analiza esta imagen y ayúdame a entender el contenido";
+        }
+
+        allMessages.push(lastUserMessage);
 
         const requestBody = {
             messages: allMessages,
