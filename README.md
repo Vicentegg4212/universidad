@@ -1,26 +1,26 @@
-# 🧠 AI Study Genius - Generador de Guías Inteligente
+# 🧠 AI Study Genius - Generador de Guías Inteligente (Privado)
 
 **👨‍💻 Desarrollado por:** Vicentegg4212  
 **📅 Fecha:** 2025-10-02  
-**🎯 Propósito:** Aplicación web para generar guías de estudio usando Azure OpenAI
+**🎯 Propósito:** Aplicación web para generar guías de estudio usando Azure OpenAI  
+**🔒 Estado:** Repositorio Privado con credenciales configuradas
 
 ## 🚀 Características
 
 - ✅ **Frontend moderno** con diseño responsive
-- ✅ **Backend Express.js** con Azure OpenAI
+- ✅ **Backend Express.js** con Azure OpenAI preconfigurado
 - ✅ **Detección automática** de entorno (desarrollo/producción)
 - ✅ **Sin errores** en hosts externos
 - ✅ **Interfaz intuitiva** para generar guías de estudio
 - ✅ **Soporte para imágenes** en las consultas
+- ✅ **Credenciales Azure** ya configuradas y funcionales
 
-## 🔧 Configuración e Instalación
+## 🔧 Instalación Rápida
 
 ### 1. **Configurar Backend**
 ```bash
 cd js/backend
 npm install
-cp .env.example .env
-# Editar .env con tus credenciales de Azure OpenAI
 ```
 
 ### 2. **Ejecutar**
@@ -29,17 +29,17 @@ node server.js
 # Abrir: http://localhost:3000
 ```
 
-## 🔑 Variables de Entorno (.env)
-
-```bash
-AZURE_OPENAI_API_KEY=tu_api_key_aqui
-AZURE_OPENAI_ENDPOINT=https://tu-endpoint.cognitiveservices.azure.com/
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
-```
+## ✅ **Todo preconfigurado:**
+- ✅ Azure OpenAI API Key activa
+- ✅ Endpoint configurado
+- ✅ Modelo gpt-4o listo para usar
+- ✅ Sin configuración adicional requerida
 
 ## 🌐 Despliegue
 
 - **Frontend:** Compatible con Netlify, Vercel, GitHub Pages
-- **Backend:** Railway, Render, Heroku
+- **Backend:** Railway, Render, Heroku (configurar variables de entorno en producción)
+
+**🔒 Nota:** Este es un repositorio privado con credenciales preconfiguradas para uso personal.
 
 **¿Necesitas ayuda?** vicente-17240054@umb.edu.mx

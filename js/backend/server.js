@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ==========================================
-// 🔑 CONFIGURACIÓN INTELIGENTE MULTI-ENTORNO
+// 🔑 CONFIGURACIÓN DIRECTA (REPOSITORIO PRIVADO)
 // ==========================================
 
 const CONFIG = {
@@ -39,7 +39,7 @@ let client = null;
 let isAzureConfigured = false;
 
 try {
-    if (CONFIG.AZURE_OPENAI_API_KEY && CONFIG.AZURE_OPENAI_API_KEY !== "TU_API_KEY_AQUI") {
+    if (CONFIG.AZURE_OPENAI_API_KEY && CONFIG.AZURE_OPENAI_API_KEY.length > 10) {
         client = new AzureOpenAI({
             endpoint: CONFIG.AZURE_OPENAI_ENDPOINT,
             apiKey: CONFIG.AZURE_OPENAI_API_KEY,
