@@ -14,12 +14,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ==========================================
-// 🔑 CONFIGURACIÓN DIRECTA (REPOSITORIO PRIVADO)
+// 🔑 CONFIGURACIÓN PARA GITHUB PAGES
 // ==========================================
 
 const CONFIG = {
-    AZURE_OPENAI_API_KEY: process.env.AZURE_OPENAI_API_KEY || "5AobTefY3p7mkeceBRQYdEQNtc6uz2F8Aio9fZ2iqDRvLh4thDeXJQQJ99BJACHYHv6XJ3w3AAAAACOGB4kA",
-    AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT || "https://ceinnova05162-5325-resource.cognitiveservices.azure.com/",
+    AZURE_OPENAI_API_KEY: process.env.AZURE_OPENAI_API_KEY || "CONFIGURE_YOUR_API_KEY_HERE",
+    AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT || "https://your-endpoint.cognitiveservices.azure.com/",
     AZURE_OPENAI_DEPLOYMENT_NAME: process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o",
     API_VERSION: process.env.AZURE_OPENAI_API_VERSION || "2024-04-01-preview",
     PORT: process.env.PORT || 3000
