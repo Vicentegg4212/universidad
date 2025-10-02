@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         endpoint: "https://ceinnova05162-5325-resource.cognitiveservices.azure.com/",
         apiKey: "5AobTefY3p7mkeceBRQYdEQNtc6uz2F8Aio9fZ2iqDRvLh4thDeXJQQJ99BJACHYHv6XJ3w3AAAAACOGB4kA",
         deployment: "gpt-4o",
-        apiVersion: "2024-04-01-preview"
+        apiVersion: "2024-08-01-preview"
     };
     
     const API_BASE_URL = isLocalhost ? 'http://localhost:3000' : window.location.origin;
@@ -75,29 +75,37 @@ Recuerda: Eres un tutor amigable pero profesional.`
         // Agregar imagen si existe
         if (imageB64) {
             console.log('📷 Agregando imagen al mensaje para Azure OpenAI');
+            const base64Data = imageB64.includes(',') ? imageB64.split(',')[1] : imageB64;
             lastUserMessage.content.push({
                 type: "image_url",
                 image_url: {
-                    url: `data:image/jpeg;base64,${imageB64.split(',')[1] || imageB64}`
+                    url: `data:image/jpeg;base64,${base64Data}`
                 }
             });
         }
 
         // Si no hay contenido, usar mensaje por defecto
         if (lastUserMessage.content.length === 0) {
-            lastUserMessage.content = "Analiza esta imagen y ayúdame a entender el contenido";
+            lastUserMessage.content.push({
+                type: "text",
+                text: "Analiza esta imagen y ayúdame a entender el contenido"
+            });
         }
 
         allMessages.push(lastUserMessage);
 
+        console.log('🔍 Mensaje construido para Azure OpenAI:', JSON.stringify(lastUserMessage, null, 2));
+
         const requestBody = {
             messages: allMessages,
-            max_tokens: 1500,
+            max_tokens: 2000,
             temperature: 0.7,
             top_p: 0.95,
             frequency_penalty: 0,
             presence_penalty: 0
         };
+
+        console.log('📤 Enviando petición a Azure OpenAI...');
 
         const response = await fetch(`${AZURE_CONFIG.endpoint}openai/deployments/${AZURE_CONFIG.deployment}/chat/completions?api-version=${AZURE_CONFIG.apiVersion}`, {
             method: 'POST',
@@ -109,11 +117,27 @@ Recuerda: Eres un tutor amigable pero profesional.`
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Azure OpenAI Error: ${errorData.error?.message || response.statusText}`);
+            const errorText = await response.text();
+            console.error('❌ Error response:', response.status, response.statusText);
+            console.error('❌ Error body:', errorText);
+            
+            let errorData;
+            try {
+                errorData = JSON.parse(errorText);
+            } catch (e) {
+                errorData = { error: { message: errorText } };
+            }
+            
+            throw new Error(`Azure OpenAI Error (${response.status}): ${errorData.error?.message || response.statusText}`);
         }
 
         const data = await response.json();
+        console.log('✅ Respuesta de Azure OpenAI recibida:', data);
+        
+        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+            throw new Error('Respuesta inválida de Azure OpenAI: no hay mensaje de respuesta');
+        }
+        
         return {
             guide: data.choices[0].message.content,
             text: data.choices[0].message.content,
@@ -647,9 +671,12 @@ Recuerda: Eres un tutor amigable pero profesional.`
 
         if (currentImageFile) {
             console.log('📷 Procesando imagen...');
+            console.log('📷 Archivo de imagen:', currentImageFile.name, currentImageFile.size, 'bytes');
             const reader = new FileReader();
             reader.onload = (event) => {
                 console.log('📷 Imagen convertida a base64');
+                console.log('📷 Base64 length:', event.target.result.length);
+                console.log('📷 Base64 preview:', event.target.result.substring(0, 100) + '...');
                 handleSend(event.target.result);
             };
             reader.onerror = (error) => {
@@ -658,6 +685,7 @@ Recuerda: Eres un tutor amigable pero profesional.`
             };
             reader.readAsDataURL(currentImageFile);
         } else {
+            console.log('📷 No hay imagen para procesar');
             handleSend(null);
         }
     };
