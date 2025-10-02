@@ -1,7 +1,76 @@
-/* ================================================
+/* =/* ============== MATHEMATICAL STYLING ============== */
+.math-container {
+    background: rgba(79, 172, 254, 0.1);
+    border-left: 4px solid var(--primary);
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.math-step {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border-left: 3px solid var(--success);
+}
+
+.math-result {
+    background: rgba(0, 242, 254, 0.1);
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: 2px solid var(--secondary);
+    text-align: center;
+    font-weight: 600;
+}
+
+.math-verification {
+    background: rgba(46, 213, 115, 0.1);
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border-left: 3px solid var(--success);
+    font-size: 0.9em;
+}
+
+/* MathJax Mobile Optimization */
+.MathJax {
+    font-size: 1.1em !important;
+    line-height: 1.5 !important;
+}
+
+.MathJax_Display {
+    margin: 12px 0 !important;
+    padding: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+}
+
+/* Inline math */
+.MathJax_Preview {
+    color: var(--primary) !important;
+}
+
+/* Math content scroll */
+mjx-container {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+    margin: 1em 0 !important;
+    text-align: center !important;
+}
+
+/* ============== END MATHEMATICAL STYLING ============== */
+
+/* ==============================================
    🚀 AI STUDY GENIUS - MOBILE FIRST PREMIUM
    👨‍💻 Desarrollado por: Vicentegg4212  
    📱 Optimizado para dispositivos móviles
+   ============================================== */
    ================================================ */
 
 /* --- VARIABLES CSS MÓVIL --- */

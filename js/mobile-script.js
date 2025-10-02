@@ -311,7 +311,7 @@ class MobileAIApp {
             contentEl.appendChild(img);
         }
         
-        // Agregar texto
+        // Agregar texto con renderizado matemático
         const textEl = document.createElement('div');
         textEl.innerHTML = this.formatMessage(message.text);
         contentEl.appendChild(textEl);
@@ -327,6 +327,9 @@ class MobileAIApp {
         messageEl.appendChild(timeEl);
         
         this.chatMessages.appendChild(messageEl);
+        
+        // Renderizar matemáticas si existen
+        this.renderMathInElement(messageEl);
     }
     
     updateSendButton() {
@@ -448,23 +451,52 @@ class MobileAIApp {
         const messages = [
             {
                 role: "system",
-                content: `Eres un asistente educativo experto creado por Vicentegg4212. 
+                content: `Eres un asistente educativo experto creado por Vicentegg4212, especializado en MATEMÁTICAS de nivel PROFESIONAL.
 
-FUNCIONES:
-📚 Crear guías de estudio completas
-🎯 Explicar conceptos claramente  
-💡 Proporcionar ejemplos prácticos
-🔍 Analizar imágenes educativas
-✅ Resolver dudas académicas
+🧮 ESPECIALIZACIÓN MATEMÁTICA:
+- Resuelves TODOS los cálculos paso a paso como un humano experto
+- Muestras CADA operación realizada detalladamente
+- Verificas que todos los resultados sean 100% EXACTOS
+- Usas notación LaTeX para ecuaciones perfectas: $ecuación$ o $$ecuación$$
+- Explicas el razonamiento detrás de cada paso
 
-FORMATO DE RESPUESTA:
+📚 FUNCIONES GENERALES:
+- Crear guías de estudio completas
+- Explicar conceptos claramente  
+- Proporcionar ejemplos prácticos
+- Analizar imágenes educativas
+- Resolver dudas académicas
+
+🔢 FORMATO MATEMÁTICO OBLIGATORIO:
+Para CUALQUIER contenido matemático:
+1. **Problema**: Reformula la pregunta claramente
+2. **Datos**: Lista lo que se conoce
+3. **Fórmulas**: Muestra las ecuaciones necesarias en LaTeX
+4. **Paso a paso**: Cada operación detallada
+5. **Verificación**: Comprueba el resultado
+6. **Respuesta final**: Destacada claramente
+
+EJEMPLO:
+**Problema**: Resolver $2x + 5 = 13$
+**Datos**: Ecuación lineal con una incógnita
+**Fórmulas**: $ax + b = c → x = \\frac{c - b}{a}$
+**Paso a paso**:
+1. $2x + 5 = 13$
+2. $2x = 13 - 5$ (restamos 5 a ambos lados)
+3. $2x = 8$
+4. $x = \\frac{8}{2}$ (dividimos entre 2)
+5. $x = 4$
+**Verificación**: $2(4) + 5 = 8 + 5 = 13$ ✓
+**Respuesta**: $x = 4$
+
+FORMATO GENERAL:
 - Usa emojis para mejor visualización
 - Estructura clara con títulos
 - Ejemplos cuando sea necesario  
 - Conciso pero completo
 - Amigable y profesional
 
-Para imágenes: analiza detalladamente el contenido educativo.`
+Para imágenes: analiza detalladamente el contenido educativo, especialmente si contiene matemáticas.`
             }
         ];
         
@@ -474,10 +506,27 @@ Para imágenes: analiza detalladamente el contenido educativo.`
             content: []
         };
         
+        // Detectar si es contenido matemático y agregar contexto especial
+        const isMathContent = this.detectMathContent(text) || imageBase64;
+        
         if (text) {
+            let enhancedText = text;
+            
+            // Si detectamos matemáticas, añadir instrucciones especiales
+            if (isMathContent) {
+                enhancedText = `[CONTENIDO MATEMÁTICO DETECTADO] ${text}
+
+Por favor:
+1. Muestra TODOS los cálculos paso a paso
+2. Usa notación LaTeX para ecuaciones: $ecuación$ o $$ecuación$$
+3. Verifica que todos los resultados sean 100% exactos
+4. Formatea usando las secciones: **Problema**, **Datos**, **Fórmulas**, **Paso a paso**, **Verificación**, **Respuesta**
+5. Si hay imagen, analiza matemáticamente todo lo visible`;
+            }
+            
             userMessage.content.push({
                 type: "text",
-                text: text
+                text: enhancedText
             });
         }
         
@@ -613,7 +662,7 @@ Para imágenes: analiza detalladamente el contenido educativo.`
     }
     
     formatMessage(text) {
-        return text
+        let formatted = text
             .replace(/\n/g, '<br>')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -621,6 +670,55 @@ Para imágenes: analiza detalladamente el contenido educativo.`
             .replace(/### (.*?)(\n|<br>|$)/g, '<h3 style="margin: 12px 0 8px 0; color: var(--primary);">$1</h3>')
             .replace(/## (.*?)(\n|<br>|$)/g, '<h2 style="margin: 16px 0 12px 0; color: var(--primary);">$1</h2>')
             .replace(/# (.*?)(\n|<br>|$)/g, '<h1 style="margin: 20px 0 16px 0; color: var(--primary);">$1</h1>');
+        
+        // Detectar y formatear contenido matemático
+        formatted = this.formatMathematicalContent(formatted);
+        
+        return formatted;
+    }
+    
+    formatMathematicalContent(text) {
+        // Detectar patrones matemáticos y agregarles clases especiales
+        let formatted = text;
+        
+        // Detectar secciones de problema matemático
+        formatted = formatted.replace(/\*\*Problema\*\*:/g, '<div class="math-step"><strong style="color: var(--primary);">🎯 Problema:</strong>');
+        formatted = formatted.replace(/\*\*Datos\*\*:/g, '</div><div class="math-step"><strong style="color: var(--secondary);">📊 Datos:</strong>');
+        formatted = formatted.replace(/\*\*Fórmulas\*\*:/g, '</div><div class="math-step"><strong style="color: var(--warning);">📐 Fórmulas:</strong>');
+        formatted = formatted.replace(/\*\*Paso a paso\*\*:/g, '</div><div class="math-step"><strong style="color: var(--success);">🔢 Paso a paso:</strong>');
+        formatted = formatted.replace(/\*\*Verificación\*\*:/g, '</div><div class="math-verification"><strong style="color: var(--success);">✅ Verificación:</strong>');
+        formatted = formatted.replace(/\*\*Respuesta\*\*:/g, '</div><div class="math-result"><strong style="color: var(--primary);">🎉 Respuesta:</strong>');
+        
+        // Cerrar divs abiertos
+        if (formatted.includes('<div class="math-')) {
+            formatted += '</div>';
+        }
+        
+        return formatted;
+    }
+    
+    renderMathInElement(element) {
+        // Renderizar matemáticas con MathJax cuando esté disponible
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([element]).catch((err) => {
+                console.log('MathJax error:', err);
+            });
+        }
+    }
+    
+    detectMathContent(text) {
+        // Detectar si el texto contiene contenido matemático
+        const mathPatterns = [
+            /\$.*?\$/,  // LaTeX inline
+            /\$\$.*?\$\$/,  // LaTeX display
+            /\d+\s*[\+\-\*\/\=]\s*\d+/,  // Operaciones básicas
+            /[xy]\s*[\+\-\*\/\=]/,  // Variables algebraicas
+            /\b(sen|cos|tan|log|ln|sqrt|∫|∂|∑)\b/,  // Funciones matemáticas
+            /\d+\^\d+/,  // Exponentes
+            /(ecuaci[óo]n|f[óo]rmula|calcul|resol|matemática)/i  // Palabras clave
+        ];
+        
+        return mathPatterns.some(pattern => pattern.test(text));
     }
     
     formatTime(timestamp) {
