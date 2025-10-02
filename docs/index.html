@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 AI Study Genius - GitHub Pages</title>
-    <meta name="description" content="Generador de guías de estudio inteligente - Desarrollado por Vicentegg4212">
+    <title>🧠 AI Study Genius - Generador de Guías Inteligente</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,90 +11,7 @@
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
-</head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <span class="logo-icon">🧠</span>
-                <span class="logo-text">AI Study Genius</span>
-            </div>
-            <div class="mode-indicator" id="modeIndicator">🌐 GitHub Pages</div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="hero-section">
-                <h1>🧠 AI Study Genius</h1>
-                <p class="subtitle">Generador de Guías de Estudio Inteligente</p>
-                <p class="description">
-                    ✨ Esta es la versión demo para GitHub Pages.<br>
-                    Para funcionalidad completa con IA, ejecuta localmente.
-                </p>
-            </div>
-
-            <!-- Chat Interface -->
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message bot-message">
-                        <div class="message-content">
-                            <h3>🎯 ¡Bienvenido a AI Study Genius!</h3>
-                            <p>Esta es la versión demo alojada en GitHub Pages.</p>
-                            <div class="demo-features">
-                                <h4>📚 Características disponibles:</h4>
-                                <ul>
-                                    <li>✅ Interfaz completa y responsive</li>
-                                    <li>✅ Diseño moderno y atractivo</li>
-                                    <li>✅ Estructura para guías de estudio</li>
-                                    <li>⚠️ IA desactivada (requiere servidor backend)</li>
-                                </ul>
-                                
-                                <h4>🚀 Para usar la IA completa:</h4>
-                                <ol>
-                                    <li>Clona el repositorio: <code>git clone https://github.com/Vicentegg4212/universidad.git</code></li>
-                                    <li>Instala dependencias: <code>cd peso/js/backend && npm install</code></li>
-                                    <li>Ejecuta el servidor: <code>node server.js</code></li>
-                                    <li>Abre: <code>http://localhost:3000</code></li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="input-section">
-                    <div class="input-container">
-                        <textarea 
-                            id="messageInput" 
-                            placeholder="Escribe tu consulta sobre el tema de estudio... (Modo demo - sin IA)"
-                            rows="3"
-                            disabled
-                        ></textarea>
-                        <button id="sendButton" class="send-button" disabled>
-                            <span>📚 Generar Guía (Demo)</span>
-                        </button>
-                    </div>
-                    <div class="demo-notice">
-                        <span>ℹ️ Modo Demo - Para IA funcional, ejecuta localmente</span>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <p>👨‍💻 Desarrollado por <strong>Vicentegg4212</strong></p>
-                <p>📧 Contacto: vicente-17240054@umb.edu.mx</p>
-                <div class="footer-links">
-                    <a href="https://github.com/Vicentegg4212/universidad" target="_blank">📁 Repositorio</a>
-                    <span>•</span>
-                    <span>📅 2025</span>
-                </div>
-            </div>
-        </footer>
-    </div>
-
+    
     <style>
         * {
             margin: 0;
@@ -110,7 +26,7 @@
             animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             color: #333;
-            line-height: 1.6;
+            overflow-x: hidden;
         }
 
         @keyframes gradientShift {
@@ -119,67 +35,68 @@
             100% { background-position: 0% 50%; }
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Partículas flotantes de fondo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3Ccircle cx='27' cy='27' r='1'/%3E%3Ccircle cx='47' cy='47' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: float 20s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-1000px) rotate(360deg); }
+        }
+
+        /* SECCIÓN DE AUTENTICACIÓN */
+        #authSection {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .auth-container {
             background: rgba(255, 255, 255, 0.95);
-            padding: 1rem 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.5rem;
-            font-weight: 700;
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+            background-size: 400% 100%;
+            animation: gradientShift 3s ease infinite;
         }
 
-        .logo-icon {
-            font-size: 2rem;
-        }
-
-        .mode-indicator {
-            background: linear-gradient(135deg, #ffa726, #ff7043);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .hero-section {
+        .auth-container h1 {
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .hero-section h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
+            font-size: 2.5rem;
+            font-weight: 800;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -187,198 +104,647 @@
         }
 
         .subtitle {
-            font-size: 1.3rem;
+            text-align: center;
             color: #666;
-            margin-bottom: 1rem;
-        }
-
-        .description {
+            margin-bottom: 30px;
             font-size: 1.1rem;
-            color: #777;
         }
 
-        .chat-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            overflow: hidden;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
         }
 
-        .chat-messages {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-            max-height: 500px;
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
         }
 
-        .message {
-            margin-bottom: 1.5rem;
-        }
-
-        .bot-message .message-content {
-            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
-            border-left: 4px solid #4caf50;
-            padding: 1.5rem;
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1e8ed;
             border-radius: 12px;
-        }
-
-        .demo-features {
-            margin-top: 1rem;
-        }
-
-        .demo-features h4 {
-            color: #333;
-            margin: 1rem 0 0.5rem;
-        }
-
-        .demo-features ul, .demo-features ol {
-            margin-left: 1.5rem;
-        }
-
-        .demo-features li {
-            margin-bottom: 0.3rem;
-        }
-
-        .demo-features code {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-        }
-
-        .input-section {
-            border-top: 1px solid #e0e0e0;
-            padding: 1.5rem;
-        }
-
-        .input-container {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-end;
-        }
-
-        #messageInput {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-family: inherit;
             font-size: 1rem;
-            resize: vertical;
-            min-height: 60px;
-            background: #f5f5f5;
-            color: #999;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
         }
 
-        .send-button {
-            padding: 1rem 1.5rem;
-            background: linear-gradient(135deg, #ccc, #999);
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .auth-container button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             border-radius: 12px;
+            font-size: 1.1rem;
             font-weight: 600;
-            cursor: not-allowed;
+            cursor: pointer;
             transition: all 0.3s ease;
-            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
         }
 
-        .demo-notice {
+        .auth-container button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .toggle-form {
             text-align: center;
-            margin-top: 1rem;
+            margin-top: 20px;
             color: #666;
-            font-size: 0.9rem;
-            font-style: italic;
         }
 
-        .footer {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        .footer-content p {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-links {
-            margin-top: 1rem;
-        }
-
-        .footer-links a {
+        .toggle-form span {
             color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .footer-links a:hover {
+            cursor: pointer;
+            font-weight: 600;
             text-decoration: underline;
         }
 
+        /* SECCIÓN PRINCIPAL DE LA APP */
+        #appSection {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* HEADER */
+        .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        #welcomeMessage {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #logoutBtn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #logoutBtn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .welcome-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 8s ease infinite;
+            margin: auto;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* HISTORIAL DE CHAT */
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-history::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-history::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .chat-history::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        /* MENSAJES */
+        .message {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: 20px;
+            position: relative;
+            animation: messageSlideIn 0.3s ease;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 8px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .message.assistant {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            color: #333;
+            margin-right: auto;
+            border-bottom-left-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .message-content {
+            position: relative;
+        }
+
+        .message-content p {
+            margin: 0;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .message-image {
+            max-width: 200px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* BARRA INFERIOR */
+        .bottom-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            padding: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .input-area:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        #textInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 16px 20px;
+            font-size: 1rem;
+            background: transparent;
+            color: #333;
+        }
+
+        #textInput::placeholder {
+            color: #999;
+        }
+
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+
+        #takePhotoBtn {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        #selectPhotoBtn {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+        }
+
+        #micBtn {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            color: white;
+            box-shadow: 0 4px 15px rgba(250, 112, 154, 0.3);
+        }
+
+        #generateBtn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        #generateBtn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #generateBtn.enabled {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 4px 25px rgba(102, 126, 234, 0.6); }
+            100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+        }
+
+        /* MENSAJES DEL SISTEMA */
+        .error-message, .success-message {
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .system-message {
+            text-align: center;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50px;
+            margin: 12px auto;
+            max-width: 300px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeInOut 5s ease;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(10px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+        }
+
+        .system-message.error {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
+            .auth-container {
+                margin: 20px;
+                padding: 30px 20px;
             }
 
-            .hero-section h1 {
+            .welcome-title {
                 font-size: 2rem;
             }
 
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
+            .message {
+                max-width: 90%;
             }
 
-            .input-container {
-                flex-direction: column;
-                gap: 0.5rem;
+            .app-header {
+                padding: 15px 20px;
             }
 
-            .send-button {
-                width: 100%;
+            .bottom-bar {
+                padding: 15px 20px;
+            }
+
+            .input-area {
+                gap: 8px;
+                padding: 6px;
+            }
+
+            .icon-btn {
+                width: 44px;
+                height: 44px;
+            }
+
+            #textInput {
+                padding: 12px 16px;
+                font-size: 0.95rem;
             }
         }
+
+        /* EFECTOS ADICIONALES */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .floating-shapes::before,
+        .floating-shapes::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: floatShapes 15s infinite ease-in-out;
+        }
+
+        .floating-shapes::before {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: -5s;
+        }
+
+        .floating-shapes::after {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            right: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes floatShapes {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(30px) rotate(240deg); }
+        }
+
+        /* TEMA OSCURO (opcional) */
+        .dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .dark-mode img,
+        .dark-mode video,
+        .dark-mode svg {
+            filter: invert(1) hue-rotate(180deg);
+        }
     </style>
+    
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <!-- Formas flotantes decorativas -->
+    <div class="floating-shapes"></div>
 
+    <!-- SECCIÓN DE AUTENTICACIÓN -->
+    <div id="authSection" class="view">
+        <div class="auth-container">
+            <!-- FORMULARIO DE LOGIN -->
+            <form id="loginForm">
+                <h1>🧠 AI Study</h1>
+                <p class="subtitle">Inicia sesión para generar guías inteligentes</p>
+                <div class="input-group">
+                    <label for="loginEmail">📧 Correo Electrónico</label>
+                    <input type="email" id="loginEmail" required placeholder="tu@email.com">
+                </div>
+                <div class="input-group">
+                    <label for="loginPassword">🔐 Contraseña</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit">🚀 Ingresar</button>
+                <div id="loginError" class="error-message" style="display: none;"></div>
+                <p class="toggle-form">¿No tienes una cuenta? <span id="showRegister">Crea una aquí ✨</span></p>
+            </form>
+
+            <!-- FORMULARIO DE REGISTRO -->
+            <form id="registerForm" style="display: none;">
+                <h1>✨ Crear Cuenta</h1>
+                <p class="subtitle">Únete y comienza a generar guías de estudio inteligentes</p>
+                <div class="input-group">
+                    <label for="registerEmail">📧 Correo Electrónico</label>
+                    <input type="email" id="registerEmail" required placeholder="tu@email.com">
+                </div>
+                <div class="input-group">
+                    <label for="registerPassword">🔐 Contraseña</label>
+                    <input type="password" id="registerPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit">🎉 Crear Cuenta</button>
+                <div id="registerError" class="error-message" style="display: none;"></div>
+                <p class="toggle-form">¿Ya tienes una cuenta? <span id="showLogin">Inicia sesión 🔑</span></p>
+            </form>
+            
+            <!-- MENSAJE DE ÉXITO -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                <span class="material-symbols-outlined">check_circle</span>
+                ¡Cuenta creada exitosamente! 🎉
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN PRINCIPAL DE LA APP -->
+    <div id="appSection" class="view" style="display: none;">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div id="welcomeMessage">👋 Bienvenido</div>
+            <button id="logoutBtn" title="Cerrar Sesión">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </header>
+        
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="main-content">
+            <!-- TÍTULO DE BIENVENIDA -->
+            <h1 id="welcomeTitle" class="welcome-title">🧠 AI Study Genius</h1>
+            
+            <!-- HISTORIAL DE CHAT -->
+            <div id="chatHistory" class="chat-history">
+                <!-- Los mensajes aparecerán aquí dinámicamente -->
+            </div>
+        </div>
+        
+        <!-- BARRA INFERIOR CON CONTROLES -->
+        <div class="bottom-bar">
+            <div class="input-area">
+                <input type="text" id="textInput" placeholder="💭 Escribe tu pregunta o sube una imagen para generar una guía...">
+                <button class="icon-btn" id="takePhotoBtn" type="button" title="📸 Tomar Foto">
+                    <span class="material-symbols-outlined">camera_alt</span>
+                </button>
+                <button class="icon-btn" id="selectPhotoBtn" type="button" title="🖼️ Seleccionar Imagen">
+                    <span class="material-symbols-outlined">image</span>
+                </button>
+                <button class="icon-btn" id="micBtn" type="button" title="🎤 Dictado por Voz">
+                    <span class="material-symbols-outlined">mic</span>
+                </button>
+                <button class="icon-btn" id="generateBtn" disabled type="button" title="🚀 Generar Guía">
+                    <span class="material-symbols-outlined">send</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- INPUT OCULTO PARA SELECCIONAR ARCHIVOS -->
+    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+
+    <!-- SCRIPT PARA EFECTOS ADICIONALES -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🧠 AI Study Genius - GitHub Pages Demo');
-            console.log('👨‍💻 Desarrollado por: Vicentegg4212');
-            console.log('🌐 Versión: GitHub Pages Static');
-            
-            // Agregar interactividad básica
-            const sendButton = document.getElementById('sendButton');
-            const messageInput = document.getElementById('messageInput');
-            
-            sendButton.addEventListener('click', () => {
-                alert('🌐 Esta es la versión demo de GitHub Pages.\n\n📚 Para usar la IA completa:\n1. Clona el repositorio\n2. Ejecuta localmente\n3. Disfruta de guías personalizadas\n\n👨‍💻 Desarrollado por: Vicentegg4212');
-            });
-
-            // Efecto de escritura en el placeholder
+        // Efectos adicionales de UI
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de tipeo en el placeholder
+            const textInput = document.getElementById('textInput');
             const placeholders = [
-                "Matemáticas avanzadas...",
-                "Historia universal...", 
-                "Programación en Python...",
-                "Biología molecular...",
-                "Literatura contemporánea..."
+                "💭 Escribe tu pregunta...",
+                "📚 ¿Qué quieres estudiar hoy?",
+                "🧠 Genera una guía inteligente...",
+                "✨ Haz tu pregunta o sube una imagen...",
+                "🔍 Explora cualquier tema...",
+                "🎯 Crea contenido educativo..."
             ];
             
-            let placeholderIndex = 0;
-            setInterval(() => {
-                if (messageInput) {
-                    messageInput.placeholder = `${placeholders[placeholderIndex]} (Modo demo - sin IA)`;
-                    placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+            let currentPlaceholder = 0;
+            
+            function changePlaceholder() {
+                if (textInput && !textInput.value) {
+                    textInput.placeholder = placeholders[currentPlaceholder];
+                    currentPlaceholder = (currentPlaceholder + 1) % placeholders.length;
                 }
-            }, 3000);
+            }
+            
+            if (textInput) {
+                setInterval(changePlaceholder, 3000);
+            }
+            
+            // Efecto de partículas al hacer hover en botones
+            document.querySelectorAll('.icon-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+            
+            // Mostrar indicador de estado de conexión
+            setTimeout(() => {
+                const statusIndicator = document.createElement('div');
+                statusIndicator.innerHTML = '🟢 Conectado al servidor AI';
+                statusIndicator.className = 'system-message';
+                statusIndicator.style.position = 'fixed';
+                statusIndicator.style.bottom = '20px';
+                statusIndicator.style.right = '20px';
+                statusIndicator.style.zIndex = '1000';
+                document.body.appendChild(statusIndicator);
+                
+                setTimeout(() => {
+                    statusIndicator.remove();
+                }, 3000);
+            }, 2000);
         });
     </script>
 </body>
