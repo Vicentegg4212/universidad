@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 AI Study Genius - GitHub Pages</title>
+    <meta name="description" content="Generador de guías de estudio inteligente - Desarrollado por Vicentegg4212">
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">AI Study Genius</span>
+            </div>
+            <div class="mode-indicator" id="modeIndicator">🌐 GitHub Pages</div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="hero-section">
+                <h1>🧠 AI Study Genius</h1>
+                <p class="subtitle">Generador de Guías de Estudio Inteligente</p>
+                <p class="description">
+                    ✨ Esta es la versión demo para GitHub Pages.<br>
+                    Para funcionalidad completa con IA, ejecuta localmente.
+                </p>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <h3>🎯 ¡Bienvenido a AI Study Genius!</h3>
+                            <p>Esta es la versión demo alojada en GitHub Pages.</p>
+                            <div class="demo-features">
+                                <h4>📚 Características disponibles:</h4>
+                                <ul>
+                                    <li>✅ Interfaz completa y responsive</li>
+                                    <li>✅ Diseño moderno y atractivo</li>
+                                    <li>✅ Estructura para guías de estudio</li>
+                                    <li>⚠️ IA desactivada (requiere servidor backend)</li>
+                                </ul>
+                                
+                                <h4>🚀 Para usar la IA completa:</h4>
+                                <ol>
+                                    <li>Clona el repositorio: <code>git clone https://github.com/Vicentegg4212/universidad.git</code></li>
+                                    <li>Instala dependencias: <code>cd peso/js/backend && npm install</code></li>
+                                    <li>Ejecuta el servidor: <code>node server.js</code></li>
+                                    <li>Abre: <code>http://localhost:3000</code></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-container">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Escribe tu consulta sobre el tema de estudio... (Modo demo - sin IA)"
+                            rows="3"
+                            disabled
+                        ></textarea>
+                        <button id="sendButton" class="send-button" disabled>
+                            <span>📚 Generar Guía (Demo)</span>
+                        </button>
+                    </div>
+                    <div class="demo-notice">
+                        <span>ℹ️ Modo Demo - Para IA funcional, ejecuta localmente</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>👨‍💻 Desarrollado por <strong>Vicentegg4212</strong></p>
+                <p>📧 Contacto: vicente-17240054@umb.edu.mx</p>
+                <div class="footer-links">
+                    <a href="https://github.com/Vicentegg4212/universidad" target="_blank">📁 Repositorio</a>
+                    <span>•</span>
+                    <span>📅 2025</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .mode-indicator {
+            background: linear-gradient(135deg, #ffa726, #ff7043);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #777;
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+        }
+
+        .bot-message .message-content {
+            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+            border-left: 4px solid #4caf50;
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .demo-features {
+            margin-top: 1rem;
+        }
+
+        .demo-features h4 {
+            color: #333;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .demo-features ul, .demo-features ol {
+            margin-left: 1.5rem;
+        }
+
+        .demo-features li {
+            margin-bottom: 0.3rem;
+        }
+
+        .demo-features code {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .input-section {
+            border-top: 1px solid #e0e0e0;
+            padding: 1.5rem;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 60px;
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        .send-button {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #ccc, #999);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .demo-notice {
+            text-align: center;
+            margin-top: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .footer-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .input-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .send-button {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧠 AI Study Genius - GitHub Pages Demo');
+            console.log('👨‍💻 Desarrollado por: Vicentegg4212');
+            console.log('🌐 Versión: GitHub Pages Static');
+            
+            // Agregar interactividad básica
+            const sendButton = document.getElementById('sendButton');
+            const messageInput = document.getElementById('messageInput');
+            
+            sendButton.addEventListener('click', () => {
+                alert('🌐 Esta es la versión demo de GitHub Pages.\n\n📚 Para usar la IA completa:\n1. Clona el repositorio\n2. Ejecuta localmente\n3. Disfruta de guías personalizadas\n\n👨‍💻 Desarrollado por: Vicentegg4212');
+            });
+
+            // Efecto de escritura en el placeholder
+            const placeholders = [
+                "Matemáticas avanzadas...",
+                "Historia universal...", 
+                "Programación en Python...",
+                "Biología molecular...",
+                "Literatura contemporánea..."
+            ];
+            
+            let placeholderIndex = 0;
+            setInterval(() => {
+                if (messageInput) {
+                    messageInput.placeholder = `${placeholders[placeholderIndex]} (Modo demo - sin IA)`;
+                    placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

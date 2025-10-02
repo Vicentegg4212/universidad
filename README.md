@@ -1,9 +1,11 @@
-# 🧠 AI Study Genius - Generador de Guías Inteligente (Privado)
+# 🧠 AI Study Genius - Generador de Guías Inteligente
 
 **👨‍💻 Desarrollado por:** Vicentegg4212  
 **📅 Fecha:** 2025-10-02  
 **🎯 Propósito:** Aplicación web para generar guías de estudio usando Azure OpenAI  
-**🔒 Estado:** Repositorio Privado con credenciales configuradas
+
+## 🌐 **Demo en Vivo**
+**� GitHub Pages:** [https://vicentegg4212.github.io/universidad/](https://vicentegg4212.github.io/universidad/)
 
 ## 🚀 Características
 
@@ -13,9 +15,21 @@
 - ✅ **Sin errores** en hosts externos
 - ✅ **Interfaz intuitiva** para generar guías de estudio
 - ✅ **Soporte para imágenes** en las consultas
-- ✅ **Credenciales Azure** ya configuradas y funcionales
+- ✅ **Demo en GitHub Pages** disponible
 
-## 🔧 Instalación Rápida
+## 🎯 **Dos Versiones Disponibles**
+
+### 🌐 **GitHub Pages (Demo)**
+- **URL:** https://vicentegg4212.github.io/universidad/
+- **Características:** Interfaz completa, diseño responsive
+- **Limitación:** Sin IA (solo demostración visual)
+
+### 🚀 **Local (Completa)**
+- **Funcionalidad:** IA Azure OpenAI totalmente operativa
+- **Características:** Generación real de guías con GPT-4
+- **Requisito:** Ejecutar servidor Node.js localmente
+
+## 🔧 Instalación para Versión Completa
 
 ### 1. **Configurar Backend**
 ```bash
@@ -35,11 +49,20 @@ node server.js
 - ✅ Modelo gpt-4o listo para usar
 - ✅ Sin configuración adicional requerida
 
-## 🌐 Despliegue
+## 🌐 GitHub Pages Setup
 
-- **Frontend:** Compatible con Netlify, Vercel, GitHub Pages
-- **Backend:** Railway, Render, Heroku (configurar variables de entorno en producción)
+Para activar GitHub Pages en tu fork:
 
-**🔒 Nota:** Este es un repositorio privado con credenciales preconfiguradas para uso personal.
+1. **Fork este repositorio**
+2. **Ve a Settings > Pages**
+3. **Source:** Deploy from a branch
+4. **Branch:** main
+5. **Folder:** /docs
+6. **Save**
+
+Tu demo estará en: `https://tuusuario.github.io/universidad/`
+
+## 🔒 **Repositorio Privado**
+Este repositorio incluye credenciales preconfiguradas para uso personal. Para uso público, configura variables de entorno.
 
 **¿Necesitas ayuda?** vicente-17240054@umb.edu.mx
