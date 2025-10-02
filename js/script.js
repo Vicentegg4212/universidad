@@ -14,38 +14,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log(`🔗 API configurada en: ${API_BASE_URL}`);
 
-    // Mostrar info del modelo actual del backend (solo si está en localhost)
-    if (isLocalhost) {
-        fetch(API_ENDPOINTS.health)
-            .then(res => res.json())
-            .then(data => {
-                if (data.model) {
-                    console.log(`🤖 Modelo conectado: ${data.model}`);
-                    let info = document.getElementById('modelInfo');
-                    if (!info) {
-                        info = document.createElement('div');
-                        info.id = 'modelInfo';
-                        info.style.cssText = `
-                            position: fixed;
-                            top: 10px;
-                            left: 10px;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            color: white;
-                            padding: 8px 16px;
-                            border-radius: 8px;
-                            font-size: 12px;
-                            z-index: 1000;
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-                        `;
-                        document.body.prepend(info);
-                    }
-                    info.textContent = `🤖 ${data.model} • ${data.user}`;
+    // Mostrar info del modelo actual del backend (funciona en cualquier entorno)
+    fetch(API_ENDPOINTS.health)
+        .then(res => res.json())
+        .then(data => {
+            if (data.model) {
+                console.log(`🤖 Modelo conectado: ${data.model} (Azure: ${data.azure_configured ? 'Sí' : 'No'})`);
+                let info = document.getElementById('modelInfo');
+                if (!info) {
+                    info = document.createElement('div');
+                    info.id = 'modelInfo';
+                    info.style.cssText = `
+                        position: fixed;
+                        top: 10px;
+                        left: 10px;
+                        background: linear-gradient(135deg, ${data.azure_configured ? '#667eea, #764ba2' : '#ffa726, #ff7043'});
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        font-size: 12px;
+                        z-index: 1000;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                    `;
+                    document.body.prepend(info);
                 }
-            })
-            .catch(err => console.log('ℹ️ Servidor backend no disponible (modo local)'));
-    } else {
-        console.log('🌐 Ejecutándose en host externo - Modo demo sin servidor backend');
-    }
+                const status = data.azure_configured ? 'IA Activa' : 'Modo Demo';
+                info.textContent = `🤖 ${data.model} • ${status} • ${data.user}`;
+            }
+        })
+        .catch(err => {
+            if (isLocalhost) {
+                console.log('ℹ️ Servidor backend no disponible (modo local)');
+            } else {
+                console.log('🌐 Ejecutándose en host externo - Funcionalidad limitada');
+                // Mostrar indicador de modo externo
+                setTimeout(() => {
+                    let info = document.createElement('div');
+                    info.style.cssText = `
+                        position: fixed;
+                        top: 10px;
+                        left: 10px;
+                        background: linear-gradient(135deg, #9e9e9e, #757575);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        font-size: 12px;
+                        z-index: 1000;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                    `;
+                    info.textContent = '🌐 Host Externo • Demo • Vicentegg4212';
+                    document.body.prepend(info);
+                }, 1000);
+            }
+        });
 
     // --- VISTAS Y ELEMENTOS PRINCIPALES ---
     const authSection = document.getElementById('authSection');
@@ -397,11 +418,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`🔗 Endpoint: ${API_ENDPOINTS.generate}`);
 
             try {
-                // Verificar si estamos en localhost (desarrollo)
-                if (!isLocalhost) {
-                    throw new Error('🌐 Esta funcionalidad requiere un servidor backend. Por favor, ejecuta la aplicación localmente con tu servidor Node.js para usar la IA.');
-                }
-
                 const requestBody = {
                     history: azureHistory,
                     lastMessage: lastMessage,
@@ -584,12 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         apiEndpoints: API_ENDPOINTS,
         checkConnection: async () => {
             try {
-                // Verificar si estamos en localhost
-                if (!isLocalhost) {
-                    throw new Error('Funcionalidad no disponible en host externo');
-                }
-
-                console.log('🔍 Verificando conexión con servidor Azure OpenAI...');
+                console.log('🔍 Verificando conexión con servidor...');
                 const response = await fetch(API_ENDPOINTS.health);
                 const data = await response.json();
                 console.log('🔍 Estado de la API:', data);
@@ -603,11 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         testGenerate: async () => {
             try {
-                // Verificar si estamos en localhost
-                if (!isLocalhost) {
-                    throw new Error('Funcionalidad no disponible en host externo');
-                }
-
                 const response = await fetch(API_ENDPOINTS.generate, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
