@@ -1,19 +1,75 @@
-// Clase para manejar la API de Azure OpenAI
+// Clase para manejar la API de Azure OpenAI - Multi-platform compatible
 class AIStudyAPI {
     constructor() {
         this.isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        this.baseURL = this.isLocal ? 'http://localhost:3000' : window.location.origin;
+        this.isGitHubPages = window.location.hostname.includes('github.io');
+        this.isVercel = window.location.hostname.includes('vercel.app');
+        
+        // Configuración para Azure OpenAI API directa
+        this.azureConfig = {
+            endpoint: 'https://ceinnova05162-5325-resource.cognitiveservices.azure.com',
+            apiKey: '5e7a3c7ba6724f8a9b0e2d5f4c8a1b6e',
+            deploymentName: 'gpt-4o',
+            apiVersion: '2024-02-15-preview'
+        };
+        
+        // URLs dinámicas según el entorno
+        this.serverlessURL = this.isVercel ? window.location.origin : 'https://ai-chatbot-github-pages.vercel.app';
+        this.directApiUrl = `${this.azureConfig.endpoint}/openai/deployments/${this.azureConfig.deploymentName}/chat/completions?api-version=${this.azureConfig.apiVersion}`;
+        
+        console.log(`🌐 Entorno detectado: ${this.getEnvironment()}`);
+    }
+
+    getEnvironment() {
+        if (this.isLocal) return 'Desarrollo Local';
+        if (this.isVercel) return 'Vercel Deployment';
+        if (this.isGitHubPages) return 'GitHub Pages';
+        return 'Desconocido';
     }
 
     async testConnection() {
         try {
-            const response = await fetch(`${this.baseURL}/api/health`);
-            const data = await response.json();
-            return {
-                status: 'online',
-                model: data.azure_openai?.deployment || 'gpt-4o',
-                ...data
-            };
+            if (this.isLocal) {
+                // Para desarrollo local, usar el servidor Node.js
+                const response = await fetch('http://localhost:3000/api/health');
+                const data = await response.json();
+                return {
+                    status: 'online',
+                    model: data.azure_openai?.deployment || 'gpt-4o',
+                    mode: 'local-server',
+                    ...data
+                };
+            } else if (this.isVercel || this.isGitHubPages) {
+                // Intentar serverless function primero
+                try {
+                    const response = await fetch(`${this.serverlessURL}/api/health`);
+                    const data = await response.json();
+                    return {
+                        status: 'online',
+                        model: data.model || 'gpt-4o',
+                        mode: 'serverless-function',
+                        url: this.serverlessURL,
+                        ...data
+                    };
+                } catch (serverlessError) {
+                    console.log('⚠️ Serverless function no disponible, usando API directa');
+                    // Fallback a API directa
+                    return {
+                        status: 'online',
+                        model: this.azureConfig.deploymentName,
+                        mode: 'direct-api',
+                        endpoint: this.azureConfig.endpoint
+                    };
+                }
+            } else {
+                // Para otros entornos, usar API directa
+                return {
+                    status: 'online',
+                    model: this.azureConfig.deploymentName,
+                    mode: 'direct-api',
+                    endpoint: this.azureConfig.endpoint
+                };
+            }
         } catch (error) {
             throw new Error(`Error de conexión: ${error.message}`);
         }
@@ -21,27 +77,119 @@ class AIStudyAPI {
 
     async generateStudyGuide(history, imageB64 = null) {
         try {
-            const response = await fetch(`${this.baseURL}/api/generate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    history: history,
-                    lastMessage: history[history.length - 1]?.content || '',
-                    imageB64: imageB64
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `HTTP ${response.status}`);
+            if (this.isLocal) {
+                // Para desarrollo local, usar el servidor Node.js
+                return await this.callLocalServer(history, imageB64);
+            } else if (this.isVercel || this.isGitHubPages) {
+                // Intentar serverless function primero
+                try {
+                    return await this.callServerlessFunction(history, imageB64);
+                } catch (serverlessError) {
+                    console.log('⚠️ Serverless function falló, usando API directa:', serverlessError.message);
+                    // Fallback a API directa
+                    return await this.callAzureDirectly(history, imageB64);
+                }
+            } else {
+                // Para otros entornos, usar API directa
+                return await this.callAzureDirectly(history, imageB64);
             }
-
-            return await response.json();
         } catch (error) {
             throw new Error(`Error al generar respuesta: ${error.message}`);
         }
+    }
+
+    async callLocalServer(history, imageB64) {
+        const response = await fetch('http://localhost:3000/api/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                history: history,
+                lastMessage: history[history.length - 1]?.content || '',
+                imageB64: imageB64
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP ${response.status}`);
+        }
+
+        return await response.json();
+    }
+
+    async callServerlessFunction(history, imageB64) {
+        console.log('🚀 Llamando a Serverless Function...');
+        
+        const response = await fetch(`${this.serverlessURL}/api/generate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                history: history,
+                lastMessage: history[history.length - 1]?.content || '',
+                imageB64: imageB64
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Serverless function error: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Respuesta recibida de Serverless Function');
+        return data;
+    }
+
+    async callAzureDirectly(history, imageB64 = null) {
+        const messages = [
+            {
+                role: "system",
+                content: "Eres un asistente de estudio inteligente y amigable. Ayudas a estudiantes con sus preguntas académicas, proporcionas explicaciones claras y útiles. Responde de manera natural y conversacional en español."
+            },
+            ...history.map(msg => ({
+                role: msg.role === 'user' ? 'user' : 'assistant',
+                content: msg.content
+            }))
+        ];
+
+        const requestBody = {
+            messages: messages,
+            max_tokens: 1000,
+            temperature: 0.7,
+            top_p: 0.9,
+            frequency_penalty: 0,
+            presence_penalty: 0
+        };
+
+        console.log('🤖 Llamando directamente a Azure OpenAI API...');
+
+        const response = await fetch(this.directApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': this.azureConfig.apiKey
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Error de Azure OpenAI:', errorText);
+            throw new Error(`Error de Azure OpenAI: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Respuesta recibida de Azure OpenAI directo');
+
+        return {
+            response: data.choices[0]?.message?.content || 'Error: No se pudo generar respuesta',
+            model: this.azureConfig.deploymentName,
+            usage: data.usage
+        };
     }
 }
 
@@ -106,7 +254,47 @@ document.addEventListener('DOMContentLoaded', () => {
         authSection.style.display = 'none';
         appSection.style.display = 'flex';
         renderHistory();
+        
+        // Verificar estado de conexión al mostrar la app
+        updateConnectionStatus();
+        
         console.log(`✅ Usuario logueado: ${username} (Vicentegg4212 - 2025-10-02 02:47:33)`);
+    };
+
+    // Función para actualizar el estado de conexión
+    const updateConnectionStatus = async () => {
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        
+        try {
+            const result = await api.testConnection();
+            
+            // Emojis según el modo
+            const modeEmojis = {
+                'local-server': '🖥️',
+                'serverless-function': '⚡',
+                'direct-api': '☁️'
+            };
+            
+            statusIndicator.textContent = modeEmojis[result.mode] || '✅';
+            
+            // Textos según el modo
+            const modeTexts = {
+                'local-server': 'Servidor Local',
+                'serverless-function': 'Serverless',
+                'direct-api': 'API Directa'
+            };
+            
+            statusText.textContent = modeTexts[result.mode] || 'Conectado';
+            statusText.style.color = '#4CAF50';
+            
+            console.log(`✅ Estado: ${result.mode} - ${api.getEnvironment()}`);
+        } catch (error) {
+            statusIndicator.textContent = '❌';
+            statusText.textContent = 'Sin conexión';
+            statusText.style.color = '#f44336';
+            console.error('❌ Error de conexión:', error);
+        }
     };
 
     const showAuthView = () => {

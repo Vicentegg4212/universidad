@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Autenticación</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-container { max-width: 400px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .hidden { display: none; }
+        #output { margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Autenticación</h1>
+    
+    <div id="authSection" class="form-container">
+        <h2>Registro</h2>
+        <form id="registerForm">
+            <input type="email" id="registerEmail" placeholder="Email" required>
+            <input type="password" id="registerPassword" placeholder="Contraseña" required>
+            <button type="submit">Registrar</button>
+        </form>
+        
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+    </div>
+    
+    <div id="appSection" class="form-container hidden">
+        <h2>¡Bienvenido!</h2>
+        <p id="welcomeMessage">Usuario logueado</p>
+        <button id="logoutBtn">Cerrar Sesión</button>
+        <button id="showUsersBtn">Mostrar Usuarios</button>
+    </div>
+    
+    <div id="output"></div>
+
+    <script>
+        console.log('🚀 Test de autenticación iniciado');
+        
+        // Funciones de localStorage
+        const getUsers = () => JSON.parse(localStorage.getItem('users')) || [];
+        const saveUsers = (users) => localStorage.setItem('users', JSON.stringify(users));
+        const getCurrentUser = () => localStorage.getItem('currentUser');
+        const setCurrentUser = (email) => localStorage.setItem('currentUser', email);
+        const clearCurrentUser = () => localStorage.removeItem('currentUser');
+        
+        // Elementos del DOM
+        const authSection = document.getElementById('authSection');
+        const appSection = document.getElementById('appSection');
+        const registerForm = document.getElementById('registerForm');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const showUsersBtn = document.getElementById('showUsersBtn');
+        const output = document.getElementById('output');
+        
+        function log(message) {
+            console.log(message);
+            output.innerHTML += `<div>${message}</div>`;
+        }
+        
+        // Verificar elementos
+        log('🔍 Verificando elementos del DOM:');
+        log(`registerForm: ${registerForm ? '✅' : '❌'}`);
+        log(`loginForm: ${loginForm ? '✅' : '❌'}`);
+        log(`authSection: ${authSection ? '✅' : '❌'}`);
+        log(`appSection: ${appSection ? '✅' : '❌'}`);
+        
+        // Funciones de vista
+        function showAppView(email) {
+            log(`✅ Mostrando app para: ${email}`);
+            const username = email.split('@')[0];
+            welcomeMessage.textContent = `👋 Bienvenido, ${username}`;
+            authSection.classList.add('hidden');
+            appSection.classList.remove('hidden');
+        }
+        
+        function showAuthView() {
+            log('🔒 Mostrando vista de autenticación');
+            authSection.classList.remove('hidden');
+            appSection.classList.add('hidden');
+            clearCurrentUser();
+        }
+        
+        // Event listeners
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            log('🔄 Procesando registro...');
+            
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            log(`📧 Email: ${email}`);
+            log(`🔐 Password length: ${password.length}`);
+            
+            const users = getUsers();
+            log(`👥 Usuarios actuales: ${users.length}`);
+            
+            if (users.find(user => user.email === email)) {
+                log('❌ Email ya existe');
+                alert('Este email ya está registrado');
+                return;
+            }
+            
+            users.push({ email, password });
+            saveUsers(users);
+            setCurrentUser(email);
+            log('✅ Usuario registrado exitosamente');
+            showAppView(email);
+        });
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            log('🔄 Procesando login...');
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const users = getUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                setCurrentUser(email);
+                log('✅ Login exitoso');
+                showAppView(email);
+            } else {
+                log('❌ Credenciales incorrectas');
+                alert('Credenciales incorrectas');
+            }
+        });
+        
+        logoutBtn.addEventListener('click', () => {
+            log('🚪 Cerrando sesión');
+            showAuthView();
+        });
+        
+        showUsersBtn.addEventListener('click', () => {
+            const users = getUsers();
+            log(`👥 Total usuarios: ${users.length}`);
+            users.forEach((user, index) => {
+                log(`${index + 1}. ${user.email}`);
+            });
+        });
+        
+        // Verificar sesión inicial
+        function checkSession() {
+            log('🔍 Verificando sesión...');
+            const currentUser = getCurrentUser();
+            log(`👤 Usuario actual: ${currentUser || 'ninguno'}`);
+            
+            if (currentUser) {
+                showAppView(currentUser);
+            } else {
+                showAuthView();
+            }
+        }
+        
+        // Inicializar
+        checkSession();
+        log('🎯 Sistema de autenticación inicializado');
+    </script>
+</body>
+</html>
