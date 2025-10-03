@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 AI Study Genius - Generador de Guías Inteligente</title>
+    <title>🤖 ChatBot Inteligente - Conversación Natural</title>   <title>🤖 ChatBot Inteligente - Conversación Natural</title>YPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>� ChatBot Inteligente - Conversación Natural</title>
     
     <!-- Cache Busting para móvil -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="2025-10-02-16:50">
+    <meta name="version" content="2025-10-02                <button class="icon-btn" id="generateBtn" disabled type="button" title="🚀 Enviar Mensaje">
+                    <span class="material-symbols-outlined">send</span>
+                </button>:50">
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -602,9 +609,49 @@
         }
     </style>
     
-    <script src="js/script.js" defer></script>
+    <script src="script.js" defer></script>
+    <script>
+        // Script de depuración para verificar la autenticación
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔧 Script de depuración cargado');
+            
+            setTimeout(() => {
+                const registerForm = document.getElementById('registerForm');
+                const loginForm = document.getElementById('loginForm');
+                
+                console.log('🔧 Verificando formularios después de 1 segundo:');
+                console.log('registerForm:', registerForm);
+                console.log('loginForm:', loginForm);
+                
+                if (registerForm) {
+                    console.log('🔧 registerForm encontrado, agregando listener adicional');
+                    registerForm.addEventListener('submit', (e) => {
+                        console.log('🔧 DEPURACIÓN: Formulario de registro enviado');
+                    });
+                }
+                
+                if (loginForm) {
+                    console.log('🔧 loginForm encontrado, agregando listener adicional');
+                    loginForm.addEventListener('submit', (e) => {
+                        console.log('🔧 DEPURACIÓN: Formulario de login enviado');
+                    });
+                }
+            }, 1000);
+        });
+    </script>
 </head>
 <body>
+    <!-- Mobile Redirect Script -->
+    <script>
+        // Detectar si es dispositivo móvil y redirigir a mobile.html
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            // Solo redirigir si no estamos ya en mobile.html
+            if (!window.location.pathname.includes('mobile.html')) {
+                window.location.href = 'mobile.html';
+            }
+        }
+    </script>
+    
     <!-- Formas flotantes decorativas -->
     <div class="floating-shapes"></div>
 
@@ -614,7 +661,7 @@
             <!-- FORMULARIO DE LOGIN -->
             <form id="loginForm">
                 <h1>🧠 AI Study</h1>
-                <p class="subtitle">Inicia sesión para generar guías inteligentes</p>
+                <p class="subtitle">Inicia sesión para chatear conmigo</p>
                 <div class="input-group">
                     <label for="loginEmail">📧 Correo Electrónico</label>
                     <input type="email" id="loginEmail" required placeholder="tu@email.com">
@@ -631,7 +678,7 @@
             <!-- FORMULARIO DE REGISTRO -->
             <form id="registerForm" style="display: none;">
                 <h1>✨ Crear Cuenta</h1>
-                <p class="subtitle">Únete y comienza a generar guías de estudio inteligentes</p>
+                <p class="subtitle">Únete y empecemos a conversar</p>
                 <div class="input-group">
                     <label for="registerEmail">📧 Correo Electrónico</label>
                     <input type="email" id="registerEmail" required placeholder="tu@email.com">
@@ -666,7 +713,7 @@
         <!-- CONTENIDO PRINCIPAL -->
         <div class="main-content">
             <!-- TÍTULO DE BIENVENIDA -->
-            <h1 id="welcomeTitle" class="welcome-title">🧠 AI Study Genius</h1>
+            <h1 id="welcomeTitle" class="welcome-title">� ChatBot Inteligente</h1>
             
             <!-- HISTORIAL DE CHAT -->
             <div id="chatHistory" class="chat-history">
@@ -677,7 +724,7 @@
         <!-- BARRA INFERIOR CON CONTROLES -->
         <div class="bottom-bar">
             <div class="input-area">
-                <input type="text" id="textInput" placeholder="💭 Escribe tu pregunta o sube una imagen para generar una guía...">
+                <input type="text" id="textInput" placeholder="� Escribe tu pregunta o mensaje para el chatbot...">
                 <button class="icon-btn" id="takePhotoBtn" type="button" title="📸 Tomar Foto">
                     <span class="material-symbols-outlined">camera_alt</span>
                 </button>
@@ -687,7 +734,7 @@
                 <button class="icon-btn" id="micBtn" type="button" title="🎤 Dictado por Voz">
                     <span class="material-symbols-outlined">mic</span>
                 </button>
-                <button class="icon-btn" id="generateBtn" disabled type="button" title="🚀 Generar Guía">
+                <button class="icon-btn" id="generateBtn" disabled type="button" title="� Enviar Mensaje">
                     <span class="material-symbols-outlined">send</span>
                 </button>
             </div>
@@ -697,63 +744,9 @@
     <!-- INPUT OCULTO PARA SELECCIONAR ARCHIVOS -->
     <input type="file" id="imageInput" accept="image/*" style="display: none;">
 
-    <!-- SCRIPT PARA EFECTOS ADICIONALES -->
-    <script>
-        // Efectos adicionales de UI
-        document.addEventListener('DOMContentLoaded', function() {
-            // Efecto de tipeo en el placeholder
-            const textInput = document.getElementById('textInput');
-            const placeholders = [
-                "💭 Escribe tu pregunta...",
-                "📚 ¿Qué quieres estudiar hoy?",
-                "🧠 Genera una guía inteligente...",
-                "✨ Haz tu pregunta o sube una imagen...",
-                "🔍 Explora cualquier tema...",
-                "🎯 Crea contenido educativo..."
-            ];
-            
-            let currentPlaceholder = 0;
-            
-            function changePlaceholder() {
-                if (textInput && !textInput.value) {
-                    textInput.placeholder = placeholders[currentPlaceholder];
-                    currentPlaceholder = (currentPlaceholder + 1) % placeholders.length;
-                }
-            }
-            
-            if (textInput) {
-                setInterval(changePlaceholder, 3000);
-            }
-            
-            // Efecto de partículas al hacer hover en botones
-            document.querySelectorAll('.icon-btn').forEach(btn => {
-                btn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.1) rotate(5deg)';
-                });
-                
-                btn.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1) rotate(0deg)';
-                });
-            });
-            
-            // Mostrar indicador de estado de conexión
-            setTimeout(() => {
-                const statusIndicator = document.createElement('div');
-                statusIndicator.innerHTML = '🟢 Conectado al servidor AI';
-                statusIndicator.className = 'system-message';
-                statusIndicator.style.position = 'fixed';
-                statusIndicator.style.bottom = '20px';
-                statusIndicator.style.right = '20px';
-                statusIndicator.style.zIndex = '1000';
-                document.body.appendChild(statusIndicator);
-                
-                setTimeout(() => {
-                    statusIndicator.remove();
-                }, 3000);
-            }, 2000);
-        });
-    </script>
     
     <!-- ✅ VERSIÓN ACTUALIZADA: 2025-10-02 16:50 - MÓVIL + IMÁGENES OPTIMIZADO -->
+</body>
+</html>
 </body>
 </html>

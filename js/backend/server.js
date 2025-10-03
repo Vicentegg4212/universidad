@@ -14,15 +14,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ==========================================
-// 🔑 CONFIGURACIÓN FUNCIONAL - IA AL 100%
+// 🔑 CONFIGURACIÓN DIRECTA (SIN .env)
 // ==========================================
 
 const CONFIG = {
-    AZURE_OPENAI_API_KEY: process.env.AZURE_OPENAI_API_KEY || "5AobTefY3p7mkeceBRQYdEQNtc6uz2F8Aio9fZ2iqDRvLh4thDeXJQQJ99BJACHYHv6XJ3w3AAAAACOGB4kA",
-    AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT || "https://ceinnova05162-5325-resource.cognitiveservices.azure.com/",
-    AZURE_OPENAI_DEPLOYMENT_NAME: process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o",
-    API_VERSION: process.env.AZURE_OPENAI_API_VERSION || "2024-04-01-preview",
-    PORT: process.env.PORT || 3000
+    AZURE_OPENAI_API_KEY: "5AobTefY3p7mkeceBRQYdEQNtc6uz2F8Aio9fZ2iqDRvLh4thDeXJQQJ99BJACHYHv6XJ3w3AAAAACOGB4kA",  // 👈 CAMBIA ESTO
+    AZURE_OPENAI_ENDPOINT: "https://ceinnova05162-5325-resource.cognitiveservices.azure.com/",
+    AZURE_OPENAI_DEPLOYMENT_NAME: "gpt-4o",
+    API_VERSION: "2024-04-01-preview",
+    PORT: 3000
 };
 
 console.log('\n🔍 VERIFICANDO CONFIGURACIÓN...');
@@ -31,32 +31,30 @@ console.log(`🌐 Endpoint: ${CONFIG.AZURE_OPENAI_ENDPOINT ? '✅ OK' : '❌ NO'
 console.log(`🤖 Deployment: ${CONFIG.AZURE_OPENAI_DEPLOYMENT_NAME}`);
 console.log(`🚪 Puerto: ${CONFIG.PORT}\n`);
 
+// Validación de configuración
+if (!CONFIG.AZURE_OPENAI_API_KEY || CONFIG.AZURE_OPENAI_API_KEY === "TU_API_KEY_AQUI") {
+    console.error('❌ ERROR CRÍTICO: AZURE_OPENAI_API_KEY no configurada');
+    console.error('📝 Abre server.js y cambia "TU_API_KEY_AQUI" por tu clave real');
+    process.exit(1);
+}
+
+if (!CONFIG.AZURE_OPENAI_ENDPOINT) {
+    console.error('❌ ERROR CRÍTICO: AZURE_OPENAI_ENDPOINT no configurado');
+    process.exit(1);
+}
+
 // ==========================================
 // 🤖 INICIALIZAR CLIENTE AZURE OPENAI
 // ==========================================
 
-let client = null;
-let isAzureConfigured = false;
+const client = new AzureOpenAI({
+    endpoint: CONFIG.AZURE_OPENAI_ENDPOINT,
+    apiKey: CONFIG.AZURE_OPENAI_API_KEY,
+    deployment: CONFIG.AZURE_OPENAI_DEPLOYMENT_NAME,
+    apiVersion: CONFIG.API_VERSION
+});
 
-try {
-    if (CONFIG.AZURE_OPENAI_API_KEY && CONFIG.AZURE_OPENAI_API_KEY.length > 10) {
-        client = new AzureOpenAI({
-            endpoint: CONFIG.AZURE_OPENAI_ENDPOINT,
-            apiKey: CONFIG.AZURE_OPENAI_API_KEY,
-            deployment: CONFIG.AZURE_OPENAI_DEPLOYMENT_NAME,
-            apiVersion: CONFIG.API_VERSION
-        });
-        isAzureConfigured = true;
-        console.log('✅ Cliente Azure OpenAI inicializado correctamente');
-    } else {
-        console.log('⚠️ Azure OpenAI no configurado - Modo demo');
-    }
-} catch (error) {
-    console.error('❌ Error inicializando Azure OpenAI:', error.message);
-    console.log('🔄 Servidor continuará en modo demo');
-}
-
-console.log('\n');
+console.log('✅ Cliente Azure OpenAI inicializado correctamente\n');
 
 // ==========================================
 // 🌐 CONFIGURAR EXPRESS
@@ -91,13 +89,10 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString(),
         user: 'Vicentegg4212',
         version: '2.0.0',
-        azure_configured: isAzureConfigured,
-        model: isAzureConfigured ? CONFIG.AZURE_OPENAI_DEPLOYMENT_NAME : 'demo-mode',
         azure_openai: {
             endpoint: CONFIG.AZURE_OPENAI_ENDPOINT,
             deployment: CONFIG.AZURE_OPENAI_DEPLOYMENT_NAME,
-            api_version: CONFIG.API_VERSION,
-            configured: isAzureConfigured
+            api_version: CONFIG.API_VERSION
         }
     });
 });
@@ -124,31 +119,6 @@ app.post('/api/generate', async (req, res) => {
         console.log(`📝 [${requestId}] Mensaje: "${lastMessage}"`);
         console.log(`🖼️ [${requestId}] Imagen: ${imageB64 ? 'Sí' : 'No'}`);
         console.log(`📚 [${requestId}] Historial: ${history.length} mensajes`);
-
-        // FORZAR USO DE AZURE OPENAI - SIN MODO DEMO
-        if (!isAzureConfigured || !client) {
-            console.error(`❌ [${requestId}] ERROR CRÍTICO: Azure OpenAI no configurado`);
-            
-            // Intentar reconfigurar el cliente
-            try {
-                console.log(`🔄 [${requestId}] Intentando reconfigurar Azure OpenAI...`);
-                client = new AzureOpenAI({
-                    endpoint: CONFIG.AZURE_OPENAI_ENDPOINT,
-                    apiKey: CONFIG.AZURE_OPENAI_API_KEY,
-                    deployment: CONFIG.AZURE_OPENAI_DEPLOYMENT_NAME,
-                    apiVersion: CONFIG.API_VERSION
-                });
-                isAzureConfigured = true;
-                console.log(`✅ [${requestId}] Cliente Azure OpenAI reconfigurado exitosamente`);
-            } catch (error) {
-                console.error(`❌ [${requestId}] Error al reconfigurar:`, error.message);
-                return res.status(500).json({
-                    error: 'Azure OpenAI no disponible. La IA requiere configuración válida.',
-                    request_id: requestId,
-                    details: error.message
-                });
-            }
-        }
 
         // Construir mensajes para Azure OpenAI
         const messages = [
