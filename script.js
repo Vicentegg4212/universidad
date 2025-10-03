@@ -200,7 +200,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializar API
     const api = new AIStudyAPI();
     
-    console.log(`🔗 API configurada para: ${api.isLocal ? 'Desarrollo Local' : 'GitHub Pages'}`);
+    // Exponer globalmente para Auto-Coder AI
+    window.api = api;
+    
+    // Inicializar Auto-Coder AI
+    let autoCoder = null;
+    
+    console.log(`🔗 API configurada para: ${api.getEnvironment()}`);
 
     // Probar conexión inicial
     api.testConnection()
@@ -359,6 +365,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logoutBtn?.addEventListener('click', () => {
         showAuthView();
+    });
+
+    // Evento para Auto-Coder AI
+    const autoCoderBtn = document.getElementById('autoCoderBtn');
+    autoCoderBtn?.addEventListener('click', async () => {
+        if (!autoCoder) {
+            console.log('🤖 Inicializando Auto-Coder AI...');
+            autoCoder = new AutoCoderAI(api);
+            await autoCoder.startAutoCoding();
+            autoCoderBtn.style.background = 'linear-gradient(135deg, #FF6B6B, #EE5A24)';
+            autoCoderBtn.title = '🤖 Auto-Coder AI Activo - Click para desactivar';
+        } else {
+            console.log('🤖 Desactivando Auto-Coder AI...');
+            const panel = document.getElementById('autoCoderPanel');
+            if (panel) panel.remove();
+            autoCoder = null;
+            autoCoderBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            autoCoderBtn.title = '🤖 Activar Auto-Coder AI';
+        }
     });
 
     const checkSession = () => {
@@ -771,6 +796,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCIÓN DE PROCESAMIENTO DE MENSAJE ACTUALIZADA ---
     const processSendMessage = async (text, currentImageFile, email) => {
+        // Comandos especiales para Auto-Coder AI
+        if (text.startsWith('/autocoder') || text.startsWith('/ai-code')) {
+            handleAutoCoderCommand(text);
+            return;
+        }
+        
         const handleSend = async (imageB64) => {
             const userMessage = {
                 role: 'user',
@@ -1084,4 +1115,94 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // Función para manejar comandos del Auto-Coder AI
+    window.handleAutoCoderCommand = async (command) => {
+        const parts = command.split(' ');
+        const action = parts[1];
+        const description = parts.slice(2).join(' ');
+
+        const addCommandMessage = (message, type = 'system') => {
+            const email = getCurrentUser();
+            const systemMessage = {
+                role: 'assistant',
+                text: message,
+                timestamp: new Date().toISOString(),
+                isCommand: true,
+                commandType: type
+            };
+            
+            let history = getChatHistory(email);
+            history.push(systemMessage);
+            saveChatHistory(email, history);
+            renderHistory();
+        };
+
+        switch(action) {
+            case 'start':
+            case 'activate':
+                if (!window.autoCoder) {
+                    window.autoCoder = new AutoCoderAI(window.api);
+                    await window.autoCoder.startAutoCoding();
+                    addCommandMessage('🤖 Auto-Coder AI activado! Panel de control disponible.', 'success');
+                } else {
+                    addCommandMessage('🤖 Auto-Coder AI ya está activo.', 'info');
+                }
+                break;
+
+            case 'generate':
+            case 'create':
+                if (window.autoCoder && description) {
+                    addCommandMessage(`🔄 Generando código: "${description}"...`, 'info');
+                    await window.autoCoder.generateCodeFromDescription(description);
+                    addCommandMessage('✅ Código generado! Revisa la ventana emergente.', 'success');
+                } else if (!window.autoCoder) {
+                    addCommandMessage('❌ Auto-Coder AI no está activo. Usa /autocoder start', 'error');
+                } else {
+                    addCommandMessage('❌ Especifica qué código generar. Ejemplo: /autocoder generate función de validación email', 'error');
+                }
+                break;
+
+            case 'optimize':
+                if (window.autoCoder) {
+                    addCommandMessage('🚀 Optimizando código actual...', 'info');
+                    await window.autoCoder.optimizeCurrentCode();
+                    addCommandMessage('✅ Análisis de optimización completado!', 'success');
+                } else {
+                    addCommandMessage('❌ Auto-Coder AI no está activo. Usa /autocoder start', 'error');
+                }
+                break;
+
+            case 'help':
+                const helpMessage = `🤖 **Comandos Auto-Coder AI:**
+
+📋 **Comandos disponibles:**
+• \`/autocoder start\` - Activar Auto-Coder AI
+• \`/autocoder generate [descripción]\` - Generar código
+• \`/autocoder optimize\` - Optimizar código actual
+• \`/autocoder help\` - Mostrar esta ayuda
+
+🎯 **Ejemplos:**
+• \`/autocoder generate función que valide emails\`
+• \`/autocoder generate componente de login con validación\`
+• \`/autocoder generate API REST para usuarios\`
+
+💡 **Tip:** También puedes usar \`/ai-code\` como alias de \`/autocoder\``;
+                
+                addCommandMessage(helpMessage, 'info');
+                break;
+
+            default:
+                addCommandMessage(`❌ Comando no reconocido: "${action}". Usa /autocoder help para ver comandos disponibles.`, 'error');
+        }
+
+        // Limpiar el input
+        const textInput = document.getElementById('textInput');
+        if (textInput) textInput.value = '';
+        updateGenerateButton();
+    };
 });
+
+// Exponer API y autoCoder globalmente para Auto-Coder AI
+window.api = null;
+window.autoCoder = null;
