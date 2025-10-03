@@ -1,0 +1,19 @@
+{
+  "name": "ai-study-genius",
+  "version": "1.0.0",
+  "description": "🧠 AI Study Genius - Generador de Guías Inteligente",
+  "main": "index.html",
+  "scripts": {
+    "start": "cd js/backend && node server.js",
+    "dev": "cd js/backend && node server.js",
+    "install-deps": "cd js/backend && npm install",
+    "setup": "cd js/backend && npm install && node server.js"
+  },
+  "keywords": ["ai", "education", "azure", "openai", "study", "guides"],
+  "author": "Vicentegg4212",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vicentegg4212/universidad.git"
+  }
+}

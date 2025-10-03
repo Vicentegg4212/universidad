@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🧠 AI Study Genius - Mobile</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AI Study Genius">
+    
+    <!-- Cache Control for Mobile -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="version" content="mobile-v2.0-2025-10-02-19:00">
+    <meta name="mobile-cache-bust" content="20251002190000">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    
+    <!-- Mathematical Rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            chtml: {
+                scale: 1.2,
+                minScale: 0.8,
+                mtextInheritFont: true,
+                merrorInheritFont: true
+            }
+        };
+    </script>
+    
+    <!-- CSS with Cache Busting -->
+    <link rel="stylesheet" href="assets/mobile-style.css?v=2025100219">
+
+    <style>
+        /* Mobile CSS Fallback - Critical styles inline */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #00f2fe;
+            --accent: #2edbbb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100vw;
+            margin: 0 auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Fix para composes */
+        .btn-camera,
+        .btn-gallery,
+        .btn-mic,
+        .btn-send {
+            min-width: 48px;
+            min-height: 48px;
+            border-radius: var(--radius-lg);
+            border: none;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        
+        .btn-camera { background: var(--secondary); }
+        .btn-gallery { background: rgba(255, 255, 255, 0.1); }
+        .btn-mic { background: var(--warning); }
+        
+        .loading-message {
+            background: var(--surface-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .loading-message .message-bubble {
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .message-content img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            margin: var(--space-sm) 0;
+        }
+        
+        /* Login específico móvil */
+        .auth-container {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin: var(--space-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .auth-title {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--space-md);
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--space-md);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            background: var(--background);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        
+        .auth-button {
+            width: 100%;
+            padding: var(--space-md);
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: white;
+            font-size: var(--text-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            min-height: 52px;
+        }
+        
+        .auth-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .auth-button:active {
+            transform: translateY(0);
+        }
+        
+        .auth-toggle {
+            text-align: center;
+            margin-top: var(--space-lg);
+            color: var(--text-secondary);
+        }
+        
+        .auth-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    
+    <!-- CSS Loading Verification Script -->
+    <script>
+        // Verificar si los CSS se cargaron correctamente en móviles
+        function checkCSSLoaded() {
+            // Verificar si las variables CSS están disponibles
+            const testElement = document.createElement('div');
+            testElement.style.cssText = 'color: var(--primary, #6366f1);';
+            document.body.appendChild(testElement);
+            const computedColor = getComputedStyle(testElement).color;
+            document.body.removeChild(testElement);
+            
+            if (computedColor === 'rgb(99, 102, 241)' || computedColor.includes('99, 102, 241')) {
+                console.log('✅ CSS Variables loaded correctly');
+                return true;
+            } else {
+                console.warn('⚠️ CSS Variables not loaded, using fallback');
+                return false;
+            }
+        }
+        
+        // Forzar recarga de CSS en móviles si es necesario
+        function forceReloadCSS() {
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            links.forEach(link => {
+                const href = link.href;
+                const newHref = href + (href.includes('?') ? '&' : '?') + 'mobile=' + Date.now();
+                const newLink = link.cloneNode();
+                newLink.href = newHref;
+                newLink.onload = () => {
+                    link.remove();
+                };
+                link.parentNode.insertBefore(newLink, link.nextSibling);
+            });
+        }
+        
+        // Verificar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (!checkCSSLoaded()) {
+                    console.log('🔄 Forcing CSS reload for mobile...');
+                    forceReloadCSS();
+                }
+            }, 1000);
+        });
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- AUTH SECTION -->
+        <div id="authSection" class="view" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: var(--space-md);">
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-container">
+                <h1 class="auth-title">🧠 AI Study Genius</h1>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: var(--space-xl);">Inicia sesión para continuar</p>
+                
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email</label>
+                    <input class="form-input" type="email" id="loginEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Contraseña</label>
+                    <input class="form-input" type="password" id="loginPassword" required>
+                </div>
+                
+                <button type="submit" class="auth-button">🚀 Ingresar</button>
+                
+                <div class="auth-toggle">
+                    ¿No tienes cuenta? <a href="#" class="auth-link" id="showRegister">Crear cuenta</a>
+                </div>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-container" style="display: none;">
+                <h1 class="auth-title">🎉 Crear Cuenta</h1>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: var(--space-xl);">Únete a AI Study Genius</p>
+                
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">Email</label>
+                    <input class="form-input" type="email" id="registerEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">Contraseña</label>
+                    <input class="form-input" type="password" id="registerPassword" required>
+                </div>
+                
+                <button type="submit" class="auth-button">✨ Crear Cuenta</button>
+                
+                <div class="auth-toggle">
+                    ¿Ya tienes cuenta? <a href="#" class="auth-link" id="showLogin">Iniciar sesión</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- APP SECTION -->
+        <div id="appSection" class="view" style="display: none;">
+            <!-- Header -->
+            <header class="mobile-header">
+                <div class="logo-mobile">
+                    <span class="icon">🧠</span>
+                    <span>AI Study Genius</span>
+                </div>
+                <div class="header-actions">
+                    <button class="header-btn library-btn" onclick="personalLibrary.showLibrary()" title="Mi Biblioteca">
+                        📚 <span class="library-count">0</span>
+                    </button>
+                    <button class="header-btn" id="clearChatBtn" title="Limpiar chat">
+                        <span class="material-symbols-outlined">refresh</span>
+                    </button>
+                    <button class="header-btn" id="logoutBtn" title="Cerrar sesión">
+                        <span class="material-symbols-outlined">logout</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Welcome Screen -->
+                <div id="welcomeScreen" class="welcome-screen">
+                    <h1 class="welcome-title">¡Hola! 👋</h1>
+                    <p class="welcome-subtitle">¿En qué puedo ayudarte a estudiar hoy?</p>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="feature-icon">📚</div>
+                            <div class="feature-title">Guías de Estudio</div>
+                            <div class="feature-description">Genera resúmenes y guías personalizadas</div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">📷</div>
+                            <div class="feature-title">Analizar Imágenes</div>
+                            <div class="feature-description">Sube fotos de apuntes y ejercicios</div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🧮</div>
+                            <div class="feature-title">Resolver Problemas</div>
+                            <div class="feature-description">Ayuda paso a paso con ejercicios</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Container -->
+                <div id="chatContainer" class="chat-container" style="display: none;">
+                    <div id="chatMessages" class="chat-messages">
+                        <!-- Los mensajes se agregarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </main>
+
+            <!-- Input Bar -->
+            <div class="mobile-input-bar">
+                <div class="input-container">
+                    <input type="text" class="text-input" id="textInput" placeholder="Pregúntame algo...">
+                    
+                    <div class="action-buttons">
+                        <button class="btn-camera touch-btn" id="takePhotoBtn" title="Tomar foto">
+                            <span class="material-symbols-outlined">camera_alt</span>
+                        </button>
+                        
+                        <button class="btn-gallery touch-btn" id="selectPhotoBtn" title="Seleccionar imagen">
+                            <span class="material-symbols-outlined">image</span>
+                        </button>
+                        
+                        <button class="btn-mic touch-btn" id="micBtn" title="Grabar audio">
+                            <span class="material-symbols-outlined">mic</span>
+                        </button>
+                        
+                        <button class="btn-send touch-btn" id="sendBtn" title="Enviar" disabled>
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+
+    <!-- JavaScript with Cache Busting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/mobile-script.js?v=2025100219"></script>
+    
+    <!-- Versión indicator -->
+    <!-- ✅ AI STUDY GENIUS MOBILE v2.0 - 2025-10-02 - ULTRA OPTIMIZADO MÓVIL -->
+</body>
+</html>

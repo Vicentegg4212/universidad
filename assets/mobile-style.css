@@ -1,0 +1,654 @@
+/* ============== MATHEMATICAL STYLING ============== */
+.math-container {
+    background: rgba(79, 172, 254, 0.1);
+    border-left: 4px solid var(--primary);
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.math-step {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border-left: 3px solid var(--success);
+}
+
+.math-result {
+    background: rgba(0, 242, 254, 0.1);
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: 2px solid var(--secondary);
+    text-align: center;
+    font-weight: 600;
+}
+
+.math-verification {
+    background: rgba(46, 213, 115, 0.1);
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border-left: 3px solid var(--success);
+    font-size: 0.9em;
+}
+
+/* MathJax Mobile Optimization */
+.MathJax {
+    font-size: 1.1em !important;
+    line-height: 1.5 !important;
+}
+
+.MathJax_Display {
+    margin: 12px 0 !important;
+    padding: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+}
+
+/* Inline math */
+.MathJax_Preview {
+    color: var(--primary) !important;
+}
+
+/* Math content scroll */
+mjx-container {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+    margin: 1em 0 !important;
+    text-align: center !important;
+}
+
+/* ============== END MATHEMATICAL STYLING ============== */
+
+/* ==============================================
+   🚀 AI STUDY GENIUS - MOBILE FIRST PREMIUM
+   👨‍💻 Desarrollado por: Vicentegg4212  
+   📱 Optimizado para dispositivos móviles
+   ============================================== */
+
+/* --- VARIABLES CSS MÓVIL --- */
+:root {
+    /* Colores principales */
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #06b6d4;
+    --background: #0f0f23;
+    --surface: #1a1a2e;
+    --surface-light: #16213e;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    
+    /* Espaciado móvil */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    
+    /* Tamaños de fuente móvil */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    
+    /* Bordes */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+    
+    /* Transiciones */
+    --transition: all 0.3s ease;
+}
+
+/* --- RESET Y BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* --- LAYOUT PRINCIPAL --- */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    position: relative;
+}
+
+/* --- HEADER MÓVIL --- */
+.mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-md);
+    z-index: 1000;
+}
+
+.logo-mobile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.logo-mobile .icon {
+    font-size: 1.5rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.header-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+}
+
+.header-btn:hover,
+.header-btn:focus {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.header-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
+.main-content {
+    flex: 1;
+    padding-top: 80px;
+    padding-bottom: 120px;
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+/* --- ÁREA DE CHAT --- */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 100%;
+}
+
+.chat-messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-sm) 0;
+    min-height: 200px;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message.user {
+    align-self: flex-end;
+}
+
+.message.assistant {
+    align-self: flex-start;
+}
+
+.message-bubble {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    position: relative;
+    word-wrap: break-word;
+    font-size: var(--text-base);
+    line-height: 1.5;
+}
+
+.message.user .message-bubble {
+    background: var(--primary);
+    color: white;
+    border-bottom-right-radius: var(--space-sm);
+}
+
+.message.assistant .message-bubble {
+    background: var(--surface);
+    color: var(--text-primary);
+    border-bottom-left-radius: var(--space-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.message-time {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+    align-self: flex-end;
+}
+
+.message.assistant .message-time {
+    align-self: flex-start;
+}
+
+/* --- BARRA INFERIOR MÓVIL --- */
+.mobile-input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: var(--space-md);
+    z-index: 1000;
+    /* Safe area para iPhone */
+    padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom, 0px));
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--background);
+    border-radius: var(--radius-xl);
+    padding: var(--space-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
+}
+
+.text-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 16px; /* Evita zoom en iOS */
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    min-height: 44px;
+}
+
+.text-input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* --- BOTONES TÁCTILES PERFECTOS --- */
+.touch-btn {
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: var(--radius-lg);
+    border: none;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+    position: relative;
+    overflow: hidden;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.touch-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.touch-btn:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.touch-btn:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Ripple effect */
+.touch-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.touch-btn:active::before {
+    width: 100px;
+    height: 100px;
+}
+
+/* Variantes de botones */
+.touch-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.touch-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.touch-btn.success {
+    background: var(--success);
+}
+
+.touch-btn.success:hover {
+    background: #059669;
+}
+
+/* --- BOTONES DE ACCIÓN --- */
+.action-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.btn-camera,
+.btn-gallery,
+.btn-mic,
+.btn-send {
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: var(--radius-lg);
+    border: none;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+    position: relative;
+    overflow: hidden;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.btn-send.enabled {
+    background: var(--success);
+}
+
+.btn-send.enabled:hover {
+    background: #059669;
+}
+
+/* --- ESTADOS DE CARGA --- */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* --- PANTALLA DE BIENVENIDA --- */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-xl);
+    min-height: 50vh;
+}
+
+.welcome-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+    color: var(--primary);
+}
+
+.welcome-subtitle {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+.feature-cards {
+    display: grid;
+    gap: var(--space-md);
+    width: 100%;
+    max-width: 400px;
+}
+
+.feature-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-sm);
+}
+
+.feature-title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+}
+
+.feature-description {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+/* --- ANIMACIONES --- */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+
+/* Teléfonos pequeños */
+@media (max-width: 375px) {
+    :root {
+        --space-md: 0.75rem;
+    }
+    
+    .mobile-header {
+        height: 56px;
+        padding: 0 var(--space-sm);
+    }
+    
+    .main-content {
+        padding-top: 76px;
+        padding-bottom: 110px;
+    }
+    
+    .message-bubble {
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .touch-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Teléfonos grandes */
+@media (min-width: 376px) and (max-width: 768px) {
+    .main-content {
+        padding-left: var(--space-lg);
+        padding-right: var(--space-lg);
+    }
+    
+    .feature-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Tablets */
+@media (min-width: 769px) {
+    .app-container {
+        max-width: 768px;
+        margin: 0 auto;
+    }
+    
+    .feature-cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .message {
+        max-width: 75%;
+    }
+}
+
+/* --- MODO OSCURO ESPECÍFICO --- */
+@media (prefers-color-scheme: light) {
+    :root {
+        --background: #ffffff;
+        --surface: #f8fafc;
+        --surface-light: #f1f5f9;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+    }
+    
+    .mobile-header,
+    .mobile-input-bar {
+        background: rgba(248, 250, 252, 0.9);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .input-container {
+        background: white;
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .message.assistant .message-bubble {
+        background: white;
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* --- ACCESIBILIDAD --- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* --- LANDSCAPE MOBILE --- */
+@media (orientation: landscape) and (max-height: 500px) {
+    .mobile-header {
+        height: 48px;
+    }
+    
+    .main-content {
+        padding-top: 60px;
+        padding-bottom: 100px;
+    }
+    
+    .welcome-screen {
+        min-height: 30vh;
+        padding: var(--space-md);
+    }
+    
+    .feature-cards {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
