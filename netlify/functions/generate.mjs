@@ -6,10 +6,11 @@ export default async (req, context) => {
   }
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Usar la API key (hardcoded por ahora, cambiar en producción)
+    const apiKey = process.env.GEMINI_API_KEY || "AIzaSyCQL9TI0bFDWE7BHb9SOxfjJRFzfs3C93Q";
     
     if (!apiKey) {
-      console.error("GEMINI_API_KEY no está definida");
+      console.error("GEMINI_API_KEY no está disponible");
       return new Response(
         JSON.stringify({ 
           error: "Error de configuración",
@@ -22,7 +23,14 @@ export default async (req, context) => {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-    const { history = [], lastMessage, imageB64 } = JSON.parse(req.body || '{}');
+    let bodyData = {};
+    try {
+      bodyData = req.body ? JSON.parse(req.body) : {};
+    } catch (e) {
+      bodyData = {};
+    }
+
+    const { history = [], lastMessage, imageB64 } = bodyData;
 
     if (!lastMessage && !imageB64) {
       return new Response(
