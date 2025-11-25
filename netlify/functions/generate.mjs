@@ -6,8 +6,12 @@ export default async (req, context) => {
   }
 
   try {
-    // Usar la API key (hardcoded por ahora, cambiar en producción)
-    const apiKey = process.env.GEMINI_API_KEY || "AIzaSyCQL9TI0bFDWE7BHb9SOxfjJRFzfs3C93Q";
+    // Usar la API key desde variables de entorno
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    console.log("DEBUG - API Key disponible:", !!apiKey);
+    console.log("DEBUG - Key length:", apiKey ? apiKey.length : 0);
+    console.log("DEBUG - Key prefix:", apiKey ? apiKey.substring(0, 10) + "..." : "undefined");
     
     if (!apiKey) {
       console.error("GEMINI_API_KEY no está disponible");
