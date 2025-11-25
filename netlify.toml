@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && cd js/backend && npm install"
+  command = "npm install @google/generative-ai"
   publish = "."
   functions = "netlify/functions"
 
