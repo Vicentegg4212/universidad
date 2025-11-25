@@ -1,0 +1,10 @@
+[build]
+  command = "npm install && npm run build"
+  publish = "."
+  functions = "functions"
+
+[env.production]
+  GEMINI_API_KEY = "AIzaSyCQL9TI0bFDWE7BHb9SOxfjJRFzfs3C93Q"
+  GITHUB_CLIENT_ID = "Ov23liW73K2PDTT9pk6h"
+  GITHUB_CLIENT_SECRET = "514fd2f3f8d1abfae8755505a7ca4ac508422dee"
+  NODE_ENV = "production"

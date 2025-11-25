@@ -50,3 +50,5 @@ Thumbs.db
 # Documentation files
 *.md
 !README.md
+# Local Netlify folder
+.netlify
