@@ -7,7 +7,7 @@ export default async (req, context) => {
 
   try {
     // Usar la API key desde variables de entorno
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || "AIzaSyC853D87BW0XbHkoIrLEuJmlARrZPTnxEE";
     
     console.log("DEBUG - API Key disponible:", !!apiKey);
     console.log("DEBUG - Key length:", apiKey ? apiKey.length : 0);
