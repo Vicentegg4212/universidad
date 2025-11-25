@@ -2,8 +2,12 @@
     console.log('🚀 Iniciando AI Study Genius - Vicentegg4212...');
     console.log(`📅 Fecha actual: 2025-10-02 02:47:33 UTC`);
 
-    // Configuración de URLs del backend
-    const API_BASE_URL = 'http://localhost:3000';
+    // Detectar si estamos en desarrollo o producción
+    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const API_BASE_URL = isDevelopment 
+        ? 'http://localhost:3000'
+        : 'https://universidad-iwir.onrender.com';
+    
     const API_ENDPOINTS = {
         health: `${API_BASE_URL}/api/health`,
         generate: `${API_BASE_URL}/api/generate`,

@@ -7,7 +7,7 @@
 const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = isDevelopment 
     ? 'http://localhost:3000'
-    : 'https://api.iastudy.me'; // URL de Vercel que configuraremos
+    : 'https://universidad-iwir.onrender.com'; // Backend en Render
 
 export const API_CONFIG = {
     // URLs base
