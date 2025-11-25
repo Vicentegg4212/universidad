@@ -110,7 +110,7 @@ export const ErrorHandler = {
                 shortMessage: 'Sin conexión al servidor',
                 solutions: [
                     'Verifica tu conexión a internet',
-                    'Asegúrate que el servidor esté ejecutándose en localhost:3001',
+                    'Asegúrate que el servidor esté ejecutándose en localhost:3000',
                     'Revisa el firewall o proxy',
                     'Intenta recargar la página'
                 ]

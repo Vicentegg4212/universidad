@@ -21,7 +21,7 @@ export const CONFIG = {
     // ==========================================
     GITHUB_CLIENT_ID: "Ov23liW73K2PDTT9pk6h",
     GITHUB_CLIENT_SECRET: "514fd2f3f8d1abfae8755505a7ca4ac508422dee",
-    GITHUB_CALLBACK_URL: "http://localhost:3001/auth/github/callback",
+    GITHUB_CALLBACK_URL: "http://localhost:3000/auth/github/callback",
 
     // ==========================================
     // 👤 INFORMACIÓN DEL DESARROLLADOR

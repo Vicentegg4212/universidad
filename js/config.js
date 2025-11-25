@@ -5,16 +5,16 @@
 
 export const API_CONFIG = {
     // URLs base
-    API_BASE_URL: 'http://localhost:3001',
+    API_BASE_URL: 'http://localhost:3000',
     
     // Endpoints
     API_ENDPOINTS: {
-        health: 'http://localhost:3001/api/health',
-        generate: 'http://localhost:3001/api/generate',
-        generateStream: 'http://localhost:3001/api/generate-stream',
-        githubMe: 'http://localhost:3001/api/github/me',
-        authGithub: 'http://localhost:3001/auth/github',
-        authLogout: 'http://localhost:3001/auth/logout'
+        health: 'http://localhost:3000/api/health',
+        generate: 'http://localhost:3000/api/generate',
+        generateStream: 'http://localhost:3000/api/generate-stream',
+        githubMe: 'http://localhost:3000/api/github/me',
+        authGithub: 'http://localhost:3000/auth/github',
+        authLogout: 'http://localhost:3000/auth/logout'
     },
 
     // Configuración de plantillas

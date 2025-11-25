@@ -3,7 +3,7 @@
     console.log(`📅 Fecha actual: 2025-10-02 02:47:33 UTC`);
 
     // Configuración de URLs del backend
-    const API_BASE_URL = 'http://localhost:3001';
+    const API_BASE_URL = 'http://localhost:3000';
     const API_ENDPOINTS = {
         health: `${API_BASE_URL}/api/health`,
         generate: `${API_BASE_URL}/api/generate`,
