@@ -1,19 +1,30 @@
 [build]
-  command = "cd js/backend && npm install"
+  command = "npm install && cd js/backend && npm install"
   publish = "."
-  functions = "js/backend"
+  functions = "netlify/functions"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/health"
+  to = "/.netlify/functions/health"
   status = 200
 
 [[redirects]]
-  from = "/auth/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/generate"
+  to = "/.netlify/functions/generate"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-stream"
+  to = "/.netlify/functions/generate"
   status = 200
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+[env]
+  GEMINI_API_KEY = "AIzaSyCQL9TI0bFDWE7BHb9SOxfjJRFzfs3C93Q"
+  GITHUB_CLIENT_ID = "Ov23liW73K2PDTT9pk6h"
+  GITHUB_CLIENT_SECRET = "514fd2f3f8d1abfae8755505a7ca4ac508422dee"
+  NODE_ENV = "production"

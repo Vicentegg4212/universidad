@@ -3,14 +3,18 @@
     console.log(`📅 Fecha actual: 2025-10-02 02:47:33 UTC`);
 
     // Configuración de URLs del backend
-    const API_BASE_URL = 'http://localhost:3000';
+    // En desarrollo: localhost:3000
+    // En Netlify: mismo dominio (/.netlify/functions/...)
+    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const API_BASE_URL = isDevelopment ? 'http://localhost:3000' : '';
+    
     const API_ENDPOINTS = {
         health: `${API_BASE_URL}/api/health`,
         generate: `${API_BASE_URL}/api/generate`,
         generateStream: `${API_BASE_URL}/api/generate-stream`
     };
 
-    console.log(`🔗 API configurada en: ${API_BASE_URL}`);
+    console.log(`🔗 API configurada en: ${API_BASE_URL || 'Netlify Functions'}`);
 
     // --- VISTAS Y ELEMENTOS PRINCIPALES ---
     const authSection = document.getElementById('authSection');
