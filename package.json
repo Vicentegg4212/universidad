@@ -1,0 +1,17 @@
+{
+  "name": "ai-study-genius",
+  "version": "2.0.0",
+  "description": "AI Study Genius - Educational Assistant with Google Gemini",
+  "main": "js/backend/server.js",
+  "scripts": {
+    "start": "cd js/backend && npm start",
+    "build": "cd js/backend && npm install",
+    "dev": "cd js/backend && npm run dev"
+  },
+  "keywords": ["ai", "study", "education", "gemini"],
+  "author": "Vicentegg4212",
+  "license": "MIT",
+  "engines": {
+    "node": "18.x"
+  }
+}
