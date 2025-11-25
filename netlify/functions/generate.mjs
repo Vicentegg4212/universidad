@@ -1,15 +1,28 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
 export default async (req, context) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
 
   try {
-    const { history = [], lastMessage, imageB64 } = JSON.parse(req.body);
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      console.error("GEMINI_API_KEY no está definida");
+      return new Response(
+        JSON.stringify({ 
+          error: "Error de configuración",
+          details: "GEMINI_API_KEY no está configurada"
+        }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const { history = [], lastMessage, imageB64 } = JSON.parse(req.body || '{}');
 
     if (!lastMessage && !imageB64) {
       return new Response(
