@@ -6,6 +6,10 @@
 [env.production]
   GEMINI_API_KEY = "AIzaSyCQL9TI0bFDWE7BHb9SOxfjJRFzfs3C93Q"
 
+[site]
+  name = "ai-study-genius"
+  domain = "iastudy.me"
+
 [[redirects]]
   from = "/api/health"
   to = "/.netlify/functions/health"
