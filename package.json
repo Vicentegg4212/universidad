@@ -8,10 +8,18 @@
     "build": "cd js/backend && npm install",
     "dev": "cd js/backend && npm run dev"
   },
-  "keywords": ["ai", "study", "education", "gemini"],
+  "keywords": [
+    "ai",
+    "study",
+    "education",
+    "gemini"
+  ],
   "author": "Vicentegg4212",
   "license": "MIT",
   "engines": {
     "node": "18.x"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
   }
 }

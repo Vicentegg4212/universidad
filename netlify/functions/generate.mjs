@@ -25,8 +25,10 @@ export default async (req, context) => {
 
     let bodyData = {};
     try {
-      bodyData = req.body ? JSON.parse(req.body) : {};
+      const text = await req.text();
+      bodyData = text ? JSON.parse(text) : {};
     } catch (e) {
+      console.error("Error parsing body:", e);
       bodyData = {};
     }
 
