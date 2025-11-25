@@ -3,18 +3,24 @@
  * Gestiona la configuración del cliente
  */
 
+// Detectar si estamos en desarrollo o producción
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = isDevelopment 
+    ? 'http://localhost:3000'
+    : 'https://api.iastudy.me'; // URL de Vercel que configuraremos
+
 export const API_CONFIG = {
     // URLs base
-    API_BASE_URL: 'http://localhost:3000',
+    API_BASE_URL: API_BASE_URL,
     
     // Endpoints
     API_ENDPOINTS: {
-        health: 'http://localhost:3000/api/health',
-        generate: 'http://localhost:3000/api/generate',
-        generateStream: 'http://localhost:3000/api/generate-stream',
-        githubMe: 'http://localhost:3000/api/github/me',
-        authGithub: 'http://localhost:3000/auth/github',
-        authLogout: 'http://localhost:3000/auth/logout'
+        health: `${API_BASE_URL}/api/health`,
+        generate: `${API_BASE_URL}/api/generate`,
+        generateStream: `${API_BASE_URL}/api/generate-stream`,
+        githubMe: `${API_BASE_URL}/api/github/me`,
+        authGithub: `${API_BASE_URL}/auth/github`,
+        authLogout: `${API_BASE_URL}/auth/logout`
     },
 
     // Configuración de plantillas
