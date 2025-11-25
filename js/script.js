@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Iniciando AI Study Genius - Vicentegg4212...');
     console.log(`📅 Fecha actual: 2025-10-02 02:47:33 UTC`);
 
     // Configuración de URLs del backend
-    const API_BASE_URL = 'http://localhost:3000';
+    const API_BASE_URL = 'http://localhost:3001';
     const API_ENDPOINTS = {
         health: `${API_BASE_URL}/api/health`,
         generate: `${API_BASE_URL}/api/generate`,
@@ -11,35 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     console.log(`🔗 API configurada en: ${API_BASE_URL}`);
-
-    // Mostrar info del modelo actual del backend (opcional, seguro)
-    fetch(API_ENDPOINTS.health)
-        .then(res => res.json())
-        .then(data => {
-            if (data.model) {
-                console.log(`🤖 Modelo conectado: ${data.model}`);
-                let info = document.getElementById('modelInfo');
-                if (!info) {
-                    info = document.createElement('div');
-                    info.id = 'modelInfo';
-                    info.style.cssText = `
-                        position: fixed;
-                        top: 10px;
-                        left: 10px;
-                        background: linear-gradient(135deg, #667eea, #764ba2);
-                        color: white;
-                        padding: 8px 16px;
-                        border-radius: 8px;
-                        font-size: 12px;
-                        z-index: 1000;
-                        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-                    `;
-                    document.body.prepend(info);
-                }
-                info.textContent = `🤖 ${data.model} • ${data.user}`;
-            }
-        })
-        .catch(err => console.log('ℹ️ Info del modelo no disponible:', err.message));
 
     // --- VISTAS Y ELEMENTOS PRINCIPALES ---
     const authSection = document.getElementById('authSection');
@@ -53,10 +24,163 @@ document.addEventListener('DOMContentLoaded', () => {
     const showRegister = document.getElementById('showRegister');
     const showLogin = document.getElementById('showLogin');
     const themeToggle = document.getElementById('themeToggle');
-    const searchInput = document.getElementById('searchInput');
-    const searchClear = document.getElementById('searchClear');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const logoutBtnSidebar = document.getElementById('logoutBtnSidebar');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
 
-    // --- LÓGICA DE BÚSQUEDA EN HISTORIAL ---
+    // --- LÓGICA DE SIDEBAR ---
+    const toggleSidebar = () => {
+        console.log('🔄 Toggling sidebar...');
+        if (sidebar) {
+            sidebar.classList.toggle('open');
+            console.log('Sidebar classes:', sidebar.className);
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.toggle('active');
+            console.log('Overlay classes:', sidebarOverlay.className);
+        }
+    };
+
+    // Agregar listeners con validación
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('📱 Botón sidebar clickeado');
+            toggleSidebar();
+        });
+    }
+    
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('📱 Botón móvil clickeado');
+            toggleSidebar();
+        });
+    }
+    
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('📱 Overlay clickeado');
+            toggleSidebar();
+        });
+    }
+
+    newChatBtn?.addEventListener('click', () => {
+        const email = getCurrentUser();
+        if (email) {
+            createNewConversation(email);
+            renderHistory();
+            renderSidebarConversations();
+            if (welcomeTitle) welcomeTitle.style.display = 'block';
+            console.log('🆕 Nuevo chat iniciado');
+            showNotification('🆕 Nuevo chat iniciado', 'success');
+        }
+    });
+
+    logoutBtnSidebar?.addEventListener('click', () => {
+        showAuthView();
+    });
+
+    // --- RENDERIZAR CONVERSACIONES EN SIDEBAR ---
+    const renderSidebarConversations = () => {
+        const email = getCurrentUser();
+        if (!email) return;
+
+        const sidebarChats = document.getElementById('sidebarChats');
+        if (!sidebarChats) return;
+
+        const conversations = getConversations(email);
+        
+        sidebarChats.innerHTML = `
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Recientes</div>
+                ${conversations.map(conv => {
+                    const isActive = conv.id === currentConversationId;
+                    const date = new Date(conv.timestamp);
+                    const timeAgo = getTimeAgo(date);
+                    
+                    return `
+                        <div class="chat-item ${isActive ? 'active' : ''}" data-conversation-id="${conv.id}">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">chat_bubble</span>
+                            <div style="flex: 1; overflow: hidden;">
+                                <div style="font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    ${conv.title}
+                                </div>
+                                <div style="font-size: 11px; opacity: 0.6; margin-top: 2px;">
+                                    ${timeAgo}
+                                </div>
+                            </div>
+                            <button class="delete-conversation-btn" data-conversation-id="${conv.id}" style="background:transparent;border:none;color:rgba(255,255,255,0.5);cursor:pointer;padding:4px;border-radius:4px;transition:all 0.2s;" title="Eliminar conversación">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                            </button>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        // Agregar event listeners a las conversaciones
+        sidebarChats.querySelectorAll('.chat-item').forEach(item => {
+            const convId = item.getAttribute('data-conversation-id');
+            
+            item.addEventListener('click', (e) => {
+                // No hacer nada si se clickeó el botón de eliminar
+                if (e.target.closest('.delete-conversation-btn')) return;
+                switchConversation(convId);
+            });
+        });
+
+        // Agregar event listeners a los botones de eliminar
+        sidebarChats.querySelectorAll('.delete-conversation-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.background = 'rgba(255, 107, 107, 0.2)';
+                btn.style.color = 'rgba(255, 107, 107, 1)';
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                btn.style.background = 'transparent';
+                btn.style.color = 'rgba(255, 255, 255, 0.5)';
+            });
+            
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const convId = btn.getAttribute('data-conversation-id');
+                
+                // Confirmar eliminación
+                if (conversations.length > 1) {
+                    if (confirm('¿Estás seguro de que quieres eliminar esta conversación?')) {
+                        deleteConversation(email, convId);
+                        showNotification('🗑️ Conversación eliminada', 'success');
+                    }
+                } else {
+                    showNotification('⚠️ No puedes eliminar la única conversación', 'error');
+                }
+            });
+        });
+    };
+
+    // Función para calcular tiempo relativo
+    const getTimeAgo = (date) => {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 1) return 'Ahora';
+        if (diffMins < 60) return `Hace ${diffMins} min`;
+        if (diffHours < 24) return `Hace ${diffHours}h`;
+        if (diffDays < 7) return `Hace ${diffDays}d`;
+        return date.toLocaleDateString();
+    };
+
+    // --- LÓGICA DE BÚSQUEDA EN HISTORIAL (REMOVIDA - AHORA EN SIDEBAR) ---
     let currentSearchTerm = '';
 
     const highlightText = (text, searchTerm) => {
@@ -65,41 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
         return text.replace(regex, '<span class="search-highlight">$1</span>');
     };
-
-    const searchHistory = (searchTerm) => {
-        currentSearchTerm = searchTerm.toLowerCase().trim();
-        
-        if (currentSearchTerm) {
-            searchClear.style.display = 'flex';
-        } else {
-            searchClear.style.display = 'none';
-        }
-        
-        renderHistory();
-        console.log(`🔍 Búsqueda: "${searchTerm}"`);
-    };
-
-    const clearSearch = () => {
-        searchInput.value = '';
-        currentSearchTerm = '';
-        searchClear.style.display = 'none';
-        renderHistory();
-        searchInput.focus();
-        console.log('🔍 Búsqueda limpiada');
-    };
-
-    // Event listeners para búsqueda
-    searchInput?.addEventListener('input', (e) => {
-        searchHistory(e.target.value);
-    });
-
-    searchInput?.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            clearSearch();
-        }
-    });
-
-    searchClear?.addEventListener('click', clearSearch);
 
     // --- LÓGICA DEL SELECTOR DE TEMA ---
     const initTheme = () => {
@@ -134,10 +223,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showAppView = (email) => {
         const username = email.split('@')[0];
-        welcomeMessage.textContent = `👋 Bienvenido, ${username}`;
+        welcomeMessage.textContent = `🧠 AI Study Genius`;
+        
+        // Actualizar info del usuario en la sidebar
+        if (userName) userName.textContent = username;
+        if (userAvatar) userAvatar.textContent = username.charAt(0).toUpperCase();
+        
+        // Inicializar conversaciones
+        const conversations = getConversations(email);
+        if (!currentConversationId && conversations.length > 0) {
+            currentConversationId = conversations[0].id;
+        }
+        
         authSection.style.display = 'none';
         appSection.style.display = 'flex';
         renderHistory();
+        renderSidebarConversations();
         console.log(`✅ Usuario logueado: ${username} (Vicentegg4212 - 2025-10-02 02:47:33)`);
     };
 
@@ -149,14 +250,28 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     showRegister?.addEventListener('click', () => {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
+        console.log('🔄 Mostrando formulario de registro');
+        if (loginForm) loginForm.style.display = 'none';
+        if (registerForm) registerForm.style.display = 'block';
     });
 
     showLogin?.addEventListener('click', () => {
-        registerForm.style.display = 'none';
-        loginForm.style.display = 'block';
+        console.log('🔄 Mostrando formulario de login');
+        if (registerForm) registerForm.style.display = 'none';
+        if (loginForm) loginForm.style.display = 'block';
     });
+
+    // --- BOTÓN DE LOGIN CON GITHUB ---
+    const githubLoginBtn = document.getElementById('github-login-btn-register');
+    if (githubLoginBtn) {
+        console.log('✅ Botón de GitHub encontrado');
+        githubLoginBtn.addEventListener('click', () => {
+            console.log('🔐 Iniciando OAuth con GitHub...');
+            window.location.href = `${API_BASE_URL}/auth/github`;
+        });
+    } else {
+        console.warn('⚠️ Botón de login con GitHub no encontrado');
+    }
 
     // --- MANEJO DE DATOS CON LOCALSTORAGE ---
     const getUsers = () => JSON.parse(localStorage.getItem('users')) || [];
@@ -164,48 +279,305 @@ document.addEventListener('DOMContentLoaded', () => {
     const getCurrentUser = () => localStorage.getItem('currentUser');
     const setCurrentUser = (email) => localStorage.setItem('currentUser', email);
     const clearCurrentUser = () => localStorage.removeItem('currentUser');
-    const getChatHistory = (email) => JSON.parse(localStorage.getItem(`chat_${email}`)) || [];
-    const saveChatHistory = (email, history) => localStorage.setItem(`chat_${email}`, JSON.stringify(history));
+    
+    // Sistema de conversaciones múltiples
+    let currentConversationId = null;
+    
+    const getConversations = (email) => {
+        const conversations = JSON.parse(localStorage.getItem(`conversations_${email}`)) || [];
+        // Si no hay conversaciones, crear una por defecto
+        if (conversations.length === 0) {
+            const defaultConv = {
+                id: Date.now().toString(),
+                title: 'Nueva conversación',
+                timestamp: new Date().toISOString(),
+                messages: []
+            };
+            conversations.push(defaultConv);
+            localStorage.setItem(`conversations_${email}`, JSON.stringify(conversations));
+            currentConversationId = defaultConv.id;
+        }
+        return conversations;
+    };
+    
+    const saveConversations = (email, conversations) => {
+        localStorage.setItem(`conversations_${email}`, JSON.stringify(conversations));
+    };
+    
+    const getCurrentConversation = (email) => {
+        const conversations = getConversations(email);
+        if (!currentConversationId && conversations.length > 0) {
+            currentConversationId = conversations[0].id;
+        }
+        return conversations.find(c => c.id === currentConversationId) || conversations[0];
+    };
+    
+    const getChatHistory = (email, includeStreaming = false) => {
+        const conversation = getCurrentConversation(email);
+        if (!conversation) {
+            console.log(`❌ Sin conversación actual`);
+            return [];
+        }
+        
+        console.log(`📖 getChatHistory(email, includeStreaming=${includeStreaming})`);
+        console.log(`   Mensajes en conversación: ${conversation.messages.length}`);
+        conversation.messages.forEach((msg, idx) => {
+            console.log(`   [RAW ${idx}] role=${msg.role}, text-len=${msg.text?.length || 0}, streaming=${msg.isStreaming}`);
+        });
+        
+        // Si includeStreaming es true, retornar sin filtrar estados temporales
+        if (includeStreaming) {
+            const filtered = conversation.messages.filter(msg => msg && msg.text !== undefined);
+            console.log(`   Retornando ${filtered.length} mensajes (con streaming)`);
+            return filtered;
+        }
+        
+        // Limpiar mensajes de estados temporales (isLoading, isStreaming)
+        const cleanMessages = conversation.messages
+            .filter(msg => msg && msg.text && msg.text.trim() !== '')
+            .map(msg => ({
+                ...msg,
+                isLoading: false,
+                isStreaming: false
+            }));
+        
+        console.log(`   Retornando ${cleanMessages.length} mensajes (limpiados)`);
+        cleanMessages.forEach((msg, idx) => {
+            console.log(`   [CLEAN ${idx}] role=${msg.role}, text-len=${msg.text?.length || 0}`);
+        });
+        
+        return cleanMessages;
+    };
+    
+    const saveChatHistory = (email, history) => {
+        const conversations = getConversations(email);
+        const currentConv = conversations.find(c => c.id === currentConversationId);
+        
+        console.log(`💾 Guardando historial para conversación: ${currentConversationId}`);
+        console.log(`   Mensajes a guardar: ${history.length}`);
+        
+        // Logging detallado de cada mensaje a guardar
+        history.forEach((msg, idx) => {
+            console.log(`   [${idx}] role=${msg.role}, text-len=${msg.text?.length || 0}, streaming=${msg.isStreaming}, loading=${msg.isLoading}`);
+        });
+        
+        if (currentConv) {
+            // Filtrar mensajes vacíos PERO mantener mensajes en streaming
+            const cleanHistory = history
+                .filter(msg => msg && (msg.text !== undefined || msg.isStreaming || msg.isLoading))
+                .map(msg => {
+                    const cleaned = {
+                        role: msg.role,
+                        text: msg.text || '',
+                        timestamp: msg.timestamp || new Date().toISOString(),
+                        image: msg.image || null,
+                        metadata: msg.metadata || null
+                    };
+                    
+                    // Mantener flags de estado si existen
+                    if (msg.isStreaming) cleaned.isStreaming = true;
+                    if (msg.isLoading) cleaned.isLoading = true;
+                    if (msg.isError) cleaned.isError = true;
+                    
+                    return cleaned;
+                });
+            
+            console.log(`   Mensajes después de limpiar: ${cleanHistory.length}`);
+            cleanHistory.forEach((msg, idx) => {
+                console.log(`   [GUARDADO ${idx}] role=${msg.role}, text-len=${msg.text?.length || 0}, streaming=${msg.isStreaming}`);
+            });
+            
+            currentConv.messages = cleanHistory;
+            currentConv.timestamp = new Date().toISOString();
+            
+            // Actualizar título basado en el primer mensaje del usuario
+            if (cleanHistory.length > 0 && currentConv.title === 'Nueva conversación') {
+                const firstUserMsg = cleanHistory.find(m => m.role === 'user' && m.text);
+                if (firstUserMsg && firstUserMsg.text) {
+                    currentConv.title = firstUserMsg.text.substring(0, 30) + (firstUserMsg.text.length > 30 ? '...' : '');
+                }
+            }
+            
+            saveConversations(email, conversations);
+            console.log(`✅ Historial guardado en localStorage`);
+            renderSidebarConversations();
+        } else {
+            console.error(`❌ No se encontró conversación con ID: ${currentConversationId}`);
+        }
+    };
+    
+    const createNewConversation = (email) => {
+        const conversations = getConversations(email);
+        const newConv = {
+            id: Date.now().toString(),
+            title: 'Nueva conversación',
+            timestamp: new Date().toISOString(),
+            messages: []
+        };
+        conversations.unshift(newConv); // Agregar al inicio
+        saveConversations(email, conversations);
+        currentConversationId = newConv.id;
+        return newConv;
+    };
+    
+    const switchConversation = (conversationId) => {
+        const email = getCurrentUser();
+        if (!email) return;
+        
+        // Limpiar conversación actual antes de cambiar
+        const conversations = getConversations(email);
+        const conv = conversations.find(c => c.id === conversationId);
+        
+        if (conv) {
+            // Limpiar mensajes inválidos
+            conv.messages = conv.messages.filter(msg => 
+                msg && 
+                msg.text && 
+                msg.text.trim() !== '' &&
+                !msg.isLoading &&
+                !msg.isStreaming
+            );
+            saveConversations(email, conversations);
+        }
+        
+        currentConversationId = conversationId;
+        renderHistory();
+        renderSidebarConversations();
+        
+        if (sidebar?.classList.contains('open')) {
+            toggleSidebar();
+        }
+        
+        console.log(`💬 Cambiado a conversación: ${conversationId}`);
+    };
+    
+    const deleteConversation = (email, conversationId) => {
+        let conversations = getConversations(email);
+        conversations = conversations.filter(c => c.id !== conversationId);
+        
+        // Si eliminamos la conversación actual, cambiar a otra
+        if (currentConversationId === conversationId) {
+            if (conversations.length === 0) {
+                // Crear una nueva si no hay ninguna
+                const newConv = {
+                    id: Date.now().toString(),
+                    title: 'Nueva conversación',
+                    timestamp: new Date().toISOString(),
+                    messages: []
+                };
+                conversations.push(newConv);
+                currentConversationId = newConv.id;
+            } else {
+                currentConversationId = conversations[0].id;
+            }
+        }
+        
+        saveConversations(email, conversations);
+        renderHistory();
+        renderSidebarConversations();
+        console.log(`🗑️ Conversación eliminada: ${conversationId}`);
+    };
 
     // --- LÓGICA DE LOGIN/REGISTRO/LOGOUT ---
-    registerForm?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('registerEmail').value;
-        const password = document.getElementById('registerPassword').value;
+    if (registerForm) {
+        console.log('✅ Formulario de registro encontrado');
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log('📝 Procesando registro...');
+            const email = document.getElementById('registerEmail')?.value;
+            const password = document.getElementById('registerPassword')?.value;
 
-        const users = getUsers();
-        if (users.find(user => user.email === email)) {
-            alert('Este email ya está registrado');
-            return;
-        }
+            if (!email || !password) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
 
-        users.push({ email, password });
-        saveUsers(users);
-        setCurrentUser(email);
-        showAppView(email);
-    });
+            const users = getUsers();
+            if (users.find(user => user.email === email)) {
+                alert('Este email ya está registrado');
+                return;
+            }
 
-    loginForm?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-
-        const users = getUsers();
-        const user = users.find(u => u.email === email && u.password === password);
-
-        if (user) {
+            users.push({ email, password });
+            saveUsers(users);
             setCurrentUser(email);
+            console.log('✅ Usuario registrado exitosamente');
             showAppView(email);
-        } else {
-            alert('Credenciales incorrectas');
-        }
-    });
+        });
+    } else {
+        console.warn('⚠️ Formulario de registro no encontrado');
+    }
+
+    if (loginForm) {
+        console.log('✅ Formulario de login encontrado');
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log('🔐 Procesando login...');
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+
+            if (!email || !password) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const users = getUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                setCurrentUser(email);
+                console.log('✅ Login exitoso');
+                showAppView(email);
+            } else {
+                alert('Credenciales incorrectas');
+            }
+        });
+    } else {
+        console.warn('⚠️ Formulario de login no encontrado');
+    }
 
     logoutBtn?.addEventListener('click', () => {
         showAuthView();
     });
 
-    const checkSession = () => {
+    const checkSession = async () => {
+        // Primero verificar si hay sesión de GitHub
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/github/me`, {
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.user) {
+                    console.log('✅ Usuario de GitHub autenticado:', data.user.login);
+                    const githubEmail = data.user.email || `${data.user.login}@github.com`;
+                    setCurrentUser(githubEmail);
+                    
+                    // Actualizar UI con info de GitHub
+                    const displayName = data.user.name || data.user.login;
+                    welcomeMessage.textContent = `🧠 AI Study Genius`;
+                    if (userName) userName.textContent = displayName;
+                    if (userAvatar) userAvatar.textContent = displayName.charAt(0).toUpperCase();
+                    
+                    // Inicializar conversaciones
+                    const conversations = getConversations(githubEmail);
+                    if (!currentConversationId && conversations.length > 0) {
+                        currentConversationId = conversations[0].id;
+                    }
+                    
+                    authSection.style.display = 'none';
+                    appSection.style.display = 'flex';
+                    renderHistory();
+                    renderSidebarConversations();
+                    showNotification(`✅ Sesión de GitHub activa: ${data.user.login}`, 'success');
+                    return;
+                }
+            }
+        } catch (error) {
+            console.log('ℹ️ No hay sesión de GitHub activa');
+        }
+
+        // Si no hay sesión de GitHub, verificar sesión local
         const currentUser = getCurrentUser();
         if (currentUser) {
             showAppView(currentUser);
@@ -320,100 +692,122 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        console.log(`📊📊📊 RENDER HISTORY INICIADO`);
+        console.log(`   Email: ${email}`);
+        console.log(`   Conversación actual: ${currentConversationId}`);
+        
         const history = getChatHistory(email);
+        console.log(`📊 Renderizando ${history.length} mensajes`);
+        
+        history.forEach((msg, idx) => {
+            console.log(`   [RENDER ${idx}] role=${msg.role}, text-preview="${msg.text?.substring(0, 50) || '(vacío)'}..."`);
+        });
+        
         chatHistoryContainer.innerHTML = '';
 
-        // Filtrar mensajes según búsqueda
-        let filteredHistory = history;
-        if (currentSearchTerm) {
-            filteredHistory = history.filter(message => 
-                message.text && message.text.toLowerCase().includes(currentSearchTerm)
-            );
-        }
+        let validMessagesCount = 0;  // Mover aquí para que esté disponible globalmente
 
-        if (filteredHistory.length === 0) {
-            if (currentSearchTerm) {
-                // Mostrar mensaje de no resultados
-                chatHistoryContainer.innerHTML = `
-                    <div class="no-results">
-                        🔍 No se encontraron mensajes que contengan "${currentSearchTerm}"
-                        <br><br>
-                        <button onclick="document.getElementById('searchInput').value=''; document.querySelector('#searchClear').click();" 
-                                style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer;">
-                            Limpiar búsqueda
-                        </button>
-                    </div>
-                `;
-            } else if (welcomeTitle) {
-                welcomeTitle.style.display = 'block';
-            }
+        if (history.length === 0) {
+            if (welcomeTitle) welcomeTitle.style.display = 'block';
         } else {
             if (welcomeTitle) welcomeTitle.style.display = 'none';
             
-            filteredHistory.forEach((message, index) => {
-                const messageElement = createMessageElement(message, index, currentSearchTerm);
-                chatHistoryContainer.appendChild(messageElement);
+            let lastDate = null;
+            
+            history.forEach((message, index) => {
+                // Agregar separador de fecha si cambia el día
+                const messageDate = message.timestamp ? new Date(message.timestamp) : new Date();
+                const dateString = messageDate.toLocaleDateString('es-ES', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                if (!lastDate || lastDate !== dateString) {
+                    const dateSeparator = document.createElement('div');
+                    dateSeparator.className = 'date-separator';
+                    dateSeparator.innerHTML = `<span>${dateString}</span>`;
+                    chatHistoryContainer.appendChild(dateSeparator);
+                    lastDate = dateString;
+                }
+                
+                const messageElement = createMessageElement(message, index);
+                if (messageElement) {
+                    chatHistoryContainer.appendChild(messageElement);
+                    console.log(`✅ Mensaje ${index + 1} renderizado: ${message.role} (text-len: ${message.text?.length || 0})`);
+                    validMessagesCount++;
+                }
             });
+            
+            // Si no hay mensajes válidos, mostrar título de bienvenida
+            if (validMessagesCount === 0 && welcomeTitle) {
+                welcomeTitle.style.display = 'block';
+            }
         }
 
         chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
-        console.log(`📝 Historial renderizado: ${filteredHistory.length}/${history.length} mensajes${currentSearchTerm ? ` (filtrado por: "${currentSearchTerm}")` : ''}`);
+        console.log(`📝 Historial renderizado: ${history.length} mensajes (${validMessagesCount || 0} válidos)`);
     };
 
-    const createMessageElement = (message, index, searchTerm = '') => {
+    const createMessageElement = (message, index) => {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${message.role}`;
         messageDiv.id = `message-${index}`;
+
+        // Verificar que el mensaje tiene contenido válido
+        if (!message) {
+            console.warn('Mensaje sin contenido detectado:', message);
+            return null;
+        }
+        
+        // Si no tiene texto ni imagen pero tiene role, dejarlo pasar
+        if (!message.text && !message.image) {
+            console.warn('Mensaje vacío detectado:', message.role);
+            // No retornar null, permitir mostrar mensajes sin contenido
+        }
+
+        // Formatear timestamp
+        const timestamp = message.timestamp ? new Date(message.timestamp) : new Date();
+        const timeString = timestamp.toLocaleTimeString('es-ES', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+
+        let messageText = '';  // Definir aquí para que esté disponible en todo el scope
 
         if (message.isLoading) {
             messageDiv.innerHTML = `
                 <div class="loading">
                     <div class="loading-spinner"></div>
-                    🤖 Generando respuesta con Azure OpenAI...
+                    <div class="loading-spinner"></div>
+                    <div class="loading-spinner"></div>
                 </div>
             `;
         } else if (message.isStreaming) {
-            const timestamp = new Date().toLocaleTimeString();
-            const roleLabel = '🧠 AI Study Assistant';
-
+            messageText = formatMessage(message.text || '');
             messageDiv.innerHTML = `
                 <div class="message-content">
-                    <div class="message-header">
-                        <span class="role">${roleLabel}</span>
-                        <span class="timestamp">${timestamp}</span>
-                        <span class="streaming-indicator">✨ Escribiendo...</span>
-                    </div>
-                    <div class="message-text">${formatMessage(message.text || '')}</div>
+                    <div class="message-text">${messageText}</div>
                 </div>
             `;
         } else {
-            const timestamp = new Date().toLocaleTimeString();
-            const roleLabel = message.role === 'user' ? '👤 Tú' : '🧠 AI Study Assistant';
-            
-            // Aplicar resaltado si hay término de búsqueda
-            let messageText = formatMessage(message.text || 'Sin contenido');
-            if (searchTerm) {
-                messageText = highlightText(messageText, searchTerm);
-                messageDiv.classList.add('highlighted');
-            }
+            messageText = formatMessage(message.text || '');
+            const roleLabel = message.role === 'user' ? 'Tú' : 'AI Assistant';
 
             messageDiv.innerHTML = `
                 <div class="message-content">
-                    <div class="message-header">
-                        <span class="role">${roleLabel}</span>
-                        <span class="timestamp">${timestamp}</span>
+                    <div class="message-header-minimal">
+                        <span class="message-role-label">${roleLabel}</span>
+                        <span class="message-time">${timeString}</span>
                     </div>
                     ${message.image ? `<img src="${message.image}" alt="Imagen enviada" class="message-image">` : ''}
-                    <div class="message-text">${messageText}</div>
-                    ${message.metadata ? `<div class="message-metadata">
-                        ${message.metadata.processing_time_ms ? `⏱️ ${message.metadata.processing_time_ms}ms` : ''}
-                        ${message.metadata.word_count ? ` • 📝 ${message.metadata.word_count} palabras` : ''}
-                        ${message.metadata.model_used ? ` • 🤖 ${message.metadata.model_used}` : ''}
-                    </div>` : ''}
+                    ${messageText ? `<div class="message-text">${messageText}</div>` : ''}
                 </div>
             `;
         }
 
+        console.log(`📨 Elemento de mensaje creado: ${message.role} - ${messageText?.substring(0, 50) || '(vacío)'}`);
         return messageDiv;
     };
 
@@ -675,7 +1069,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             if (imageB64) userMessage.image = imageB64;
 
-            let history = getChatHistory(email);
+            let history = getChatHistory(email, true);
             history.push(userMessage);
             saveChatHistory(email, history);
             renderHistory();
@@ -689,6 +1083,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 timestamp: new Date().toISOString(),
                 isStreaming: true
             };
+            history = getChatHistory(email, true);
             history.push(streamingMessage);
             saveChatHistory(email, history);
             renderHistory();
@@ -701,25 +1096,26 @@ document.addEventListener('DOMContentLoaded', () => {
             // Preparar datos para la API
             const lastMessage = text || 'Analiza esta imagen y crea una guía de estudio';
 
-            const azureHistory = history
+            // Obtener historial limpio para enviar a la API (sin el mensaje de streaming actual)
+            const cleanHistory = getChatHistory(email, true)
                 .filter(msg => !msg.isLoading && !msg.isStreaming && msg.text)
-                .slice(-10)
-                .map(msg => ({
-                    role: msg.role,
-                    content: msg.text
-                }));
+                .slice(-3);  // Solo últimos 3 mensajes = MÁS RÁPIDO
+            
+            const azureHistory = cleanHistory.map(msg => ({
+                role: msg.role,
+                content: msg.text
+            }));
 
-            if (azureHistory.length > 0 && azureHistory[azureHistory.length - 1].role === 'user') {
-                azureHistory.pop();
-            }
+            // NO remover el último mensaje - Gemini necesita el historial completo
+            // y el lastMessage se envía por separado
+
+            const requestBody = {
+                history: azureHistory,
+                lastMessage: lastMessage,
+                imageB64: imageB64
+            };
 
             try {
-                const requestBody = {
-                    history: azureHistory,
-                    lastMessage: lastMessage,
-                    imageB64: imageB64
-                };
-
                 console.log('📦 Enviando petición con streaming...');
                 
                 const response = await retryRequest(async () => {
@@ -765,9 +1161,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                 } else if (data.type === 'complete') {
                                     // Actualizar mensaje final
-                                    history = getChatHistory(email);
-                                    if (history.length > 0 && history[history.length - 1].isStreaming) {
-                                        history[history.length - 1] = {
+                                    history = getChatHistory(email, true);
+                                    const streamingIndex = history.findIndex(msg => msg.isStreaming);
+                                    
+                                    if (streamingIndex !== -1) {
+                                        history[streamingIndex] = {
                                             role: 'assistant',
                                             text: data.guide || accumulatedText,
                                             timestamp: data.timestamp || new Date().toISOString(),
@@ -775,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                                 request_id: data.request_id,
                                                 processing_time_ms: data.processing_time_ms,
                                                 word_count: data.word_count,
-                                                model_used: CONFIG.AZURE_OPENAI_DEPLOYMENT_NAME
+                                                model_used: data.model_used || 'gpt-4o'
                                             }
                                         };
                                         saveChatHistory(email, history);
@@ -819,9 +1217,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const data = await fallbackResponse.json();
 
-                    history = getChatHistory(email);
-                    if (history.length > 0 && history[history.length - 1].isStreaming) {
-                        history[history.length - 1] = {
+                    history = getChatHistory(email, true);
+                    const streamingIndex = history.findIndex(msg => msg.isStreaming);
+                    
+                    if (streamingIndex !== -1) {
+                        history[streamingIndex] = {
                             role: 'assistant',
                             text: data.guide || data.text,
                             timestamp: data.timestamp || new Date().toISOString(),
@@ -840,11 +1240,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } catch (fallbackError) {
                     console.error('❌ Error en fallback:', fallbackError);
+                    const errorDetails = getErrorDetails(fallbackError);
 
-                    history = getChatHistory(email);
-                    if (history.length > 0 && history[history.length - 1].isStreaming) {
-                        const errorDetails = getErrorDetails(fallbackError);
-                        history[history.length - 1] = {
+                    history = getChatHistory(email, true);
+                    const streamingIndex = history.findIndex(msg => msg.isStreaming);
+                    
+                    if (streamingIndex !== -1) {
+                        history[streamingIndex] = {
                             role: 'assistant',
                             text: `❌ **Error de Conexión**\n\n${errorDetails.message}\n\n💡 **Soluciones sugeridas:**\n${errorDetails.solutions.map(s => `• ${s}`).join('\n')}\n\n⚠️ **Código de error:** ${errorDetails.code}\n🕐 **Hora:** ${new Date().toLocaleString()}\n\n👨‍💻 Desarrollado por: Vicentegg4212`,
                             timestamp: new Date().toISOString(),
@@ -1087,4 +1489,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // ==========================================
+    // 🔧 VALIDACIÓN Y FIX PARA BOTONES
+    // ==========================================
+    
+    // Verificar que el botón de menú existe y funciona
+    setTimeout(() => {
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const sb = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        console.log('🔍 Verificación de botones:');
+        console.log(`   📱 Botón menú: ${menuBtn ? '✅ Encontrado' : '❌ NO ENCONTRADO'}`);
+        console.log(`   📂 Sidebar: ${sb ? '✅ Encontrado' : '❌ NO ENCONTRADO'}`);
+        console.log(`   🎭 Overlay: ${overlay ? '✅ Encontrado' : '❌ NO ENCONTRADO'}`);
+        
+        // Asegurar que el botón está clickeable
+        if (menuBtn && !menuBtn.onclick && !menuBtn.listeners) {
+            console.log('🔧 Agregando listener al botón menú...');
+            menuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('✅ Botón menú clickeado!');
+                
+                if (sb) {
+                    sb.classList.toggle('open');
+                    console.log('📂 Sidebar toggled:', sb.classList.contains('open'));
+                }
+                
+                if (overlay) {
+                    overlay.classList.toggle('active');
+                    console.log('🎭 Overlay toggled:', overlay.classList.contains('active'));
+                }
+            });
+        }
+    }, 500);
 });

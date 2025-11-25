@@ -46,3 +46,7 @@ jspm_packages/
 
 # Windows
 Thumbs.db
+
+# Documentation files
+*.md
+!README.md
