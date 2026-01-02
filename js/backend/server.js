@@ -2,12 +2,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 import { CONFIG, validateConfig, getChatConfig } from './config.js';
+import * as db from './database.js';
 import net from 'net';
+
+// Cargar variables de entorno
+dotenv.config({ path: '../../.env' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -98,6 +104,9 @@ function validateAndCleanHistory(history) {
 // ==========================================
 // 🌐 CONFIGURAR EXPRESS
 // ==========================================
+
+// Habilitar compresión gzip para respuestas más rápidas
+app.use(compression());
 
 app.use(cors({
     origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost'],
@@ -206,6 +215,108 @@ app.get('/auth/logout', (req, res) => {
 // 📡 ENDPOINTS DE LA API
 // ==========================================
 
+// ==========================================
+// 🗄️ ENDPOINTS DE BASE DE DATOS
+// ==========================================
+
+// Guardar/actualizar usuario
+app.post('/api/db/user', async (req, res) => {
+    try {
+        const userData = req.body;
+        const result = await db.saveUser(userData);
+        res.json(result);
+    } catch (error) {
+        console.error('Error guardando usuario:', error);
+        res.status(500).json({ error: 'Error guardando usuario', details: error.message });
+    }
+});
+
+// Obtener usuario
+app.get('/api/db/user/:email', async (req, res) => {
+    try {
+        const user = await db.getUser(req.params.email);
+        if (user) {
+            res.json({ success: true, user });
+        } else {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error obteniendo usuario:', error);
+        res.status(500).json({ error: 'Error obteniendo usuario', details: error.message });
+    }
+});
+
+// Guardar conversación
+app.post('/api/db/conversation', async (req, res) => {
+    try {
+        const conversationData = req.body;
+        const result = await db.saveConversation(conversationData);
+        res.json(result);
+    } catch (error) {
+        console.error('Error guardando conversación:', error);
+        res.status(500).json({ error: 'Error guardando conversación', details: error.message });
+    }
+});
+
+// Obtener conversaciones de usuario
+app.get('/api/db/conversations/:userId', async (req, res) => {
+    try {
+        const conversations = await db.getUserConversations(req.params.userId);
+        res.json({ success: true, conversations });
+    } catch (error) {
+        console.error('Error obteniendo conversaciones:', error);
+        res.status(500).json({ error: 'Error obteniendo conversaciones', details: error.message });
+    }
+});
+
+// Guardar mensaje
+app.post('/api/db/message', async (req, res) => {
+    try {
+        const messageData = req.body;
+        const result = await db.saveMessage(messageData);
+        res.json(result);
+    } catch (error) {
+        console.error('Error guardando mensaje:', error);
+        res.status(500).json({ error: 'Error guardando mensaje', details: error.message });
+    }
+});
+
+// Obtener mensajes de conversación
+app.get('/api/db/messages/:conversationId', async (req, res) => {
+    try {
+        const messages = await db.getConversationMessages(req.params.conversationId);
+        res.json({ success: true, messages });
+    } catch (error) {
+        console.error('Error obteniendo mensajes:', error);
+        res.status(500).json({ error: 'Error obteniendo mensajes', details: error.message });
+    }
+});
+
+// Obtener estadísticas de usuario
+app.get('/api/db/stats/:userId', async (req, res) => {
+    try {
+        const stats = await db.getUserStats(req.params.userId);
+        res.json({ success: true, stats });
+    } catch (error) {
+        console.error('Error obteniendo estadísticas:', error);
+        res.status(500).json({ error: 'Error obteniendo estadísticas', details: error.message });
+    }
+});
+
+// Probar conexión a DynamoDB
+app.get('/api/db/test', async (req, res) => {
+    try {
+        const isConnected = await db.testConnection();
+        res.json({ 
+            success: isConnected, 
+            message: isConnected ? 'Conexión exitosa a DynamoDB' : 'Error de conexión a DynamoDB',
+            tables: db.DB_CONFIG.TABLES
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error probando conexión', details: error.message });
+    }
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
     console.log('🏥 Health check recibido');
@@ -215,6 +326,7 @@ app.get('/api/health', (req, res) => {
         user: 'Vicentegg4212',
         version: '2.0.0',
         model: CONFIG.GEMINI_MODEL,
+        database: 'DynamoDB',
         gemini: {
             model: CONFIG.GEMINI_MODEL
         }
@@ -228,6 +340,10 @@ app.post('/api/generate', async (req, res) => {
 
     console.log(`\n📨 [${requestId}] Nueva petición recibida`);
     console.log(`⏰ Timestamp: ${new Date().toISOString()}`);
+
+    // Declarar variables fuera del try para acceso en catch
+    let chat = null;
+    let messageContent = [];
 
     try {
         const { history = [], lastMessage, imageB64 } = req.body;
@@ -274,7 +390,7 @@ app.post('/api/generate', async (req, res) => {
         console.log(`📚 [${requestId}] Historial limpio: ${chatHistory.length} mensajes`);
 
         // Construir el mensaje con system prompt
-        let messageContent = [];
+        messageContent = [];
         
         // Agregar system prompt al inicio
         messageContent.push(CONFIG.SYSTEM_PROMPT);
@@ -283,7 +399,7 @@ app.post('/api/generate', async (req, res) => {
         messageContent.push(...userContent);
 
         // Iniciar chat con historial (sin systemInstruction)
-        const chat = model.startChat({
+        chat = model.startChat({
             history: chatHistory,
             generationConfig: {
                 maxOutputTokens: CONFIG.GEMINI_CONFIG.maxOutputTokens,
@@ -318,7 +434,7 @@ app.post('/api/generate', async (req, res) => {
         const processingTime = Date.now() - startTime;
         
         // Si es error 429 (cuota excedida), reintenta automáticamente
-        if (error.status === 429) {
+        if (error.status === 429 && chat) {
             console.warn(`⏳ [${requestId}] Cuota excedida (429), reintentando en 5 segundos...`);
             
             // Esperar y reintentar
@@ -574,12 +690,39 @@ app.post('/api/generate-stream', async (req, res) => {
 app.get('/', (req, res) => {
     const indexPath = path.resolve(__dirname, '../../index.html');
     console.log(`📄 Sirviendo index.html desde: ${indexPath}`);
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(indexPath);
 });
 
 // Servir archivos estáticos desde la raíz del proyecto (después de rutas API y auth)
 const projectRoot = path.resolve(__dirname, '../../');
-app.use(express.static(projectRoot));
+app.use(express.static(projectRoot, {
+    maxAge: '1d', // Caché de 1 día para archivos estáticos
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+        // Asegurar UTF-8 para todos los archivos
+        res.setHeader('Content-Type', res.getHeader('Content-Type') || 'text/plain');
+        if (!res.getHeader('Content-Type').includes('charset')) {
+            const currentType = res.getHeader('Content-Type');
+            res.setHeader('Content-Type', `${currentType}; charset=utf-8`);
+        }
+        
+        // Caché agresivo para assets
+        if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
+            res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 día
+        }
+        // Caché para imágenes
+        if (filePath.match(/\.(jpg|jpeg|png|gif|svg|ico|webp)$/)) {
+            res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 días
+        }
+        // Sin caché para HTML
+        if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        }
+    }
+}));
 console.log(`📂 Sirviendo archivos estáticos desde: ${projectRoot}`);
 
 // Manejo de errores 404

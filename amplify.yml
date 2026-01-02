@@ -1,0 +1,23 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install
+        - cd js/backend && npm install
+    build:
+      commands:
+        - echo "Build completed"
+  artifacts:
+    baseDirectory: /
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - js/backend/node_modules/**/*
+backend:
+  phases:
+    build:
+      commands:
+        - cd js/backend && npm install

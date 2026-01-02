@@ -1075,22 +1075,21 @@
 
             let history = getChatHistory(email, true);
             history.push(userMessage);
-            saveChatHistory(email, history);
-            renderHistory();
-
-            console.log('👤 Mensaje del usuario agregado al historial');
-
-            // Agregar mensaje de IA en streaming
+            
+            // Agregar mensaje de IA en streaming inmediatamente
             const streamingMessage = {
                 role: 'assistant',
                 text: '',
                 timestamp: new Date().toISOString(),
                 isStreaming: true
             };
-            history = getChatHistory(email, true);
             history.push(streamingMessage);
+            
+            // Guardar y renderizar UNA SOLA VEZ
             saveChatHistory(email, history);
             renderHistory();
+
+            console.log('👤 Mensaje del usuario y streaming agregados al historial');
 
             const lastMessageElement = chatHistoryContainer.lastElementChild;
             const messageTextElement = lastMessageElement?.querySelector('.message-text');

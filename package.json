@@ -1,18 +1,22 @@
 {
   "name": "ai-study-genius",
   "version": "2.0.0",
-  "description": "AI Study Genius - Educational Assistant with Google Gemini",
+  "description": "AI Study Genius - Educational Assistant with Google Gemini and DynamoDB",
   "main": "js/backend/server.js",
+  "type": "module",
   "scripts": {
-    "start": "cd js/backend && npm start",
+    "start": "node js/backend/server.js",
     "build": "cd js/backend && npm install",
-    "dev": "cd js/backend && npm run dev"
+    "dev": "cd js/backend && node --watch server.js",
+    "install-backend": "cd js/backend && npm install"
   },
   "keywords": [
     "ai",
     "study",
     "education",
-    "gemini"
+    "gemini",
+    "dynamodb",
+    "aws"
   ],
   "author": "Vicentegg4212",
   "license": "MIT",

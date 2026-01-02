@@ -7,8 +7,8 @@ export const CONFIG = {
     // ==========================================
     // 🔑 CONFIGURACIÓN GOOGLE GEMINI
     // ==========================================
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY || "AIzaSyCQL9TI0bFDWE7BHb9SOxfjJRFzfs3C93Q",
-    GEMINI_MODEL: "gemini-2.0-flash",
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY || "AIzaSyClniu6ZTQTuNAYt1_4hGEkTCpsr7bBQVA",
+    GEMINI_MODEL: process.env.GEMINI_MODEL || "gemini-2.5-flash",
     
     // ==========================================
     // 🌐 SERVIDOR
@@ -33,9 +33,9 @@ export const CONFIG = {
     // 🤖 CONFIGURACIÓN DE GOOGLE GEMINI
     // ==========================================
     GEMINI_CONFIG: {
-        maxOutputTokens: 1500,  // Reducido al MÁXIMO para VELOCIDAD EXTREMA
-        temperature: 0.05,  // MÍNIMO para respuestas ultra-rápidas
-        topP: 0.5  // MUY reducido para menos generación
+        maxOutputTokens: 8000,  // Aumentado para respuestas completas
+        temperature: 0.7,  // Balance entre creatividad y precisión
+        topP: 0.95  // Permitir respuestas más completas
     },
 
     // ==========================================

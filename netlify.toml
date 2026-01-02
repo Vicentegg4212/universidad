@@ -1,13 +1,61 @@
 [build]
-  command = "npm install @google/generative-ai"
+  command = "npm install && npm install -f && cd netlify/functions && npm install"
   publish = "."
   functions = "netlify/functions"
 
+[build.environment]
+  NODE_VERSION = "18"
+
+# Optimizaciones de caché y compresión
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-XSS-Protection = "1; mode=block"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, s-maxage=86400"
+    Content-Type = "application/javascript; charset=utf-8"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, s-maxage=86400"
+    Content-Type = "text/css; charset=utf-8"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, immutable"
+
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
 [env.production]
-  GEMINI_API_KEY = "AIzaSyCQL9TI0bFDWE7BHb9SOxfjJRFzfs3C93Q"
+  GEMINI_API_KEY = "AIzaSyClniu6ZTQTuNAYt1_4hGEkTCpsr7bBQVA"
 
 [site]
-  name = "ai-study-genius"
   domain = "iastudy.me"
 
 [[redirects]]
